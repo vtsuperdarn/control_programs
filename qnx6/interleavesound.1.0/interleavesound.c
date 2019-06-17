@@ -146,6 +146,7 @@ int main(int argc,char *argv[]) {
   /* the file contains one integer value per line */
   int sounder_freqs_total=8;
   int sounder_freqs[MAX_SND_FREQS]= {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0 };
+  int *sounder_beams;
   int sounder_beamse[]={0,2,4,6,8,10,12,14};        /* beam sequences for 24-beam MSI radars using only */
   int sounder_beamsw[]={22,20,18,16,14,12,10,8};    /*  the 16 most meridional beams */
   int sounder_freq_count=0, sounder_beam_count=0;
@@ -223,9 +224,11 @@ int main(int argc,char *argv[]) {
 
   /* Point to the beams here */
   if (strcmp(ststr,"cve") == 0) {
-    bms = bmse;  /* 1-min sequence */
+    bms = bmse;
+    sounder_beams = sounder_beamse;
   } else if (strcmp(ststr,"cvw") == 0) {
-    bms = bmsw;  /* 1-min sequence */
+    bms = bmsw;
+    sounder_beams = sounder_beamsw;
   } else {
     printf("Error: Not intended for station %s\n", ststr);
     return (-1);
