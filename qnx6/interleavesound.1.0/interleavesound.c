@@ -43,33 +43,10 @@
 #include "sitebuild.h"
 #include "siteglobal.h"
 
-#define NUM_SND_DATA 360
 #define SND_NRANG 75
-#define SND_NBM 16
-#define SND_NFBIN 26
 #define MAX_SND_FREQS 12
 
-struct sounder_struct {
-  double stime;
-  char program_name[40];
-  int site_id;
-  int beam_num;
-  int freq;
-  int noise;
-  int frange;
-  int rsep;
-  float pwr[SND_NRANG];
-  float vel[SND_NRANG];
-  float width[SND_NRANG];
-  float AOA[SND_NRANG];
-  int gsct[SND_NRANG];
-  int qflg[SND_NRANG];
-};
-
-void write_sounding_record_new(char *progname, struct RadarParm *prm,
-                               struct FitData *fit,
-                               struct sounder_struct *sounder_data,
-                               int *act_snd_rec);
+void write_sounding_record_new(char *progname, struct RadarParm *prm struct FitData *fit);
 
 #define RT_TASK 2
 
@@ -169,16 +146,17 @@ int main(int argc,char *argv[]) {
   /* the file contains one integer value per line */
   int sounder_freqs_total=8;
   int sounder_freqs[MAX_SND_FREQS]= {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0 };
-  int sounder_beams[]={0,2,4,6,8,10,12,14};
+  int sounder_beamse[]={0,2,4,6,8,10,12,14};        /* beam sequences for 24-beam MSI radars using only */
+  int sounder_beamsw[]={22,20,18,16,14,12,10,8};    /*  the 16 most meridional beams */
   int sounder_freq_count=0, sounder_beam_count=0;
   int sounder_beams_total=8, odd_beams=0;
   int sounder_freq;
   int sounder_beam_loop=1;
-  int fast_intt=3;
-  int sounder_intt=2;
+  int fast_intt_sc=2;
+  int fast_intt_us=500000;
+  int sounder_intt_sc=1;
+  int sounder_intt_us=500000;
   float sounder_time, time_needed=1.25;
-  struct sounder_struct *sounder_data;
-  int act_snd_rec=0;
 
   char *snd_dir;
   char data_path[100];
@@ -202,14 +180,13 @@ int main(int argc,char *argv[]) {
   } else {
     fprintf(stderr,"Sounder File: %s not found\n",snd_filename);
   }
-  sounder_data= (struct sounder_struct *) calloc(sizeof(struct sounder_struct), NUM_SND_DATA);
   /* ------------------------------------------------------- */
 
 
   /* standard radar defaults */
   cp     = 197;
-  intsc  = fast_intt;
-  intus  = 0;
+  intsc  = fast_intt_sc;
+  intus  = fast_intt_us;
   mppul  = 8;
   mplgs  = 23;
   mpinc  = 1500;
@@ -479,7 +456,8 @@ int main(int argc,char *argv[]) {
 
       sounder_beam_loop= ( sounder_time-(float)sounder_intt > time_needed );
       while(sounder_beam_loop) {
-        intsc=sounder_intt;
+        intsc=sounder_intt_sc;
+        intus=sounder_intt_us;
 
         /* set the beam */
         bmnum=sounder_beams[sounder_beam_count]+odd_beams;
@@ -551,7 +529,7 @@ int main(int argc,char *argv[]) {
         ErrLog(errlog.sock, progname, logtxt);
 
         /* save the sounding mode data */
-        write_sounding_record_new(progname, prm, fit, sounder_data, &act_snd_rec);
+        write_sounding_record_new(progname, prm, fit);
 
         ErrLog(errlog.sock, progname, "Polling SND for exit.");
         if (exitpoll !=0) break;
@@ -579,7 +557,8 @@ int main(int argc,char *argv[]) {
       }
 
       /* now wait for the next interleavescan */
-      intsc=fast_intt;
+      intsc=fast_intt_sc;
+      intus=fast_intt_us;
       if (scannowait==0) SiteEndScan(scnsc,scnus);
     }
 
@@ -620,8 +599,7 @@ void usage(void)
 /********************** function write_sounding_record_new() ************************/
 /* changed the data structure */
 
-void write_sounding_record_new(char *progname, struct RadarParm *prm, struct FitData *fit,
-                               struct sounder_struct *sounder_data, int *act_snd_rec)
+void write_sounding_record_new(char *progname, struct RadarParm *prm, struct FitData *fit)
 {
   int i;
 
@@ -717,25 +695,4 @@ void write_sounding_record_new(char *progname, struct RadarParm *prm, struct Fit
     }
   }
   fclose(out);
-
-  /* Fill the next sounder data record */
-  act_snd_data= sounder_data + *act_snd_rec;
-  act_snd_data->stime= TimeYMDHMSToEpoch(prm->time.yr, prm->time.mo, prm->time.dy, prm->time.hr, prm->time.mt, prm->time.sc);
-  memcpy(act_snd_data->program_name, progname, sizeof(act_snd_data->program_name));
-  act_snd_data->site_id= prm->stid;
-  act_snd_data->beam_num= prm->bmnum;
-  act_snd_data->freq= prm->tfreq;
-  act_snd_data->noise= prm->noise.mean;
-  act_snd_data->frange= prm->frang;
-  act_snd_data->rsep= prm->rsep;
-  for( i=0; i< SND_NRANG; i++ ) {
-    act_snd_data->pwr[i]= fit->rng[i].p_l;
-    act_snd_data->vel[i]= fit->rng[i].v;
-    act_snd_data->width[i]= fit->rng[i].w_l;
-    act_snd_data->AOA[i]= fit->elv[i].normal;
-    act_snd_data->gsct[i]= fit->rng[i].gsct;
-    act_snd_data->qflg[i]= fit->rng[i].qflg;
-  }
-  *act_snd_rec= *act_snd_rec + 1;
-  if (*act_snd_rec >= NUM_SND_DATA) *act_snd_rec= 0;
 }

@@ -71,28 +71,8 @@ char *tasklist[]=
 int arg=0;
 struct OptionData opt;
 
-#define NUM_SND_DATA 360
 #define SND_NRANG 75
-#define SND_NBM 16
-#define SND_NFBIN 26
 #define MAX_SND_FREQS 12
-
-struct sounder_struct {
-  double stime;
-  char program_name[40];
-  int site_id;
-  int beam_num;
-  int freq;
-  int noise;
-  int frange;
-  int rsep;
-  float pwr[SND_NRANG];
-  float vel[SND_NRANG];
-  float width[SND_NRANG];
-  float AOA[SND_NRANG];
-  int gsct[SND_NRANG];
-  int qflg[SND_NRANG];
-}
 
 int main(int argc,char *argv[]) {
 
@@ -202,8 +182,6 @@ int main(int argc,char *argv[]) {
   int fast_intt=3;
   int sounder_intt=2;
   float sounder_time, time_needed=1.25;
-  struct sounder_struct *sounder_data;
-  int act_snd_rec=0;
 
   sprintf(snd_filename, "%s/sounder.dat", getenv("SD_HDWPATH"));
   snd_dat=fopen(snd_filename, "r");
@@ -216,7 +194,6 @@ int main(int argc,char *argv[]) {
     fclose(snd_dat);
   }
 
-  sounder_data=(struct sounder_struct *) calloc(sizeof(struct sounder_struct), NUM_SND_DATA);
   /* ------------------------------------------------------- */
 
 
@@ -521,7 +498,7 @@ int main(int argc,char *argv[]) {
         ErrLog(errlog, progname, logtxt);
 
         /* save the sounding mode data */
-        write_sounding_record_new(progname, &prm, &fit, sounder_data, &act_snd_rec);
+        write_sounding_record_new(progname, &prm, &fit);
 
         ErrLog(errlog, progname, "Polling SND for exit.");
         exitpoll=RadarShell(sid,&rstable);
@@ -576,7 +553,7 @@ void u_read_uconts() {
 /********************** function write_sounding_record_new() ************************/
 /* changed the data structure */
 
-void write_sounding_record_new(char *progname, struct RadarParm *prm, struct FitData *fit, struct sounder_struct *sounder_data, int *act_snd_rec)
+void write_sounding_record_new(char *progname, struct RadarParm *prm, struct FitData *fit)
 {
   int i;
 
@@ -672,25 +649,4 @@ void write_sounding_record_new(char *progname, struct RadarParm *prm, struct Fit
     }
   }
   fclose(out);
-
-  /* Fill the next sounder data record */
-  act_snd_data= sounder_data + *act_snd_rec;
-  act_snd_data->stime= TimeYMDHMSToEpoch(prm->time.yr, prm->time.mo, prm->time.dy, prm->time.hr, prm->time.mt, prm->time.sc);
-  memcpy(act_snd_data->program_name, progname, sizeof(act_snd_data->program_name));
-  act_snd_data->site_id= prm->stid;
-  act_snd_data->beam_num= prm->bmnum;
-  act_snd_data->freq= prm->tfreq;
-  act_snd_data->noise= prm->noise.mean;
-  act_snd_data->frange= prm->frang;
-  act_snd_data->rsep= prm->rsep;
-  for( i=0; i< SND_NRANG; i++ ) {
-    act_snd_data->pwr[i]= fit->rng[i].p_l;
-    act_snd_data->vel[i]= fit->rng[i].v;
-    act_snd_data->width[i]= fit->rng[i].w_l;
-    act_snd_data->AOA[i]= fit->elv[i].normal;
-    act_snd_data->gsct[i]= fit->rng[i].gsct;
-    act_snd_data->qflg[i]= fit->rng[i].qflg;
-  }
-  *act_snd_rec= *act_snd_rec + 1;
-  if (*act_snd_rec >= NUM_SND_DATA) *act_snd_rec= 0;
 }
