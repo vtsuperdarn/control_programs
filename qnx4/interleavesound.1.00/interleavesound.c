@@ -188,8 +188,8 @@ int main(int argc,char *argv[]) {
   if (snd_dat != NULL) {
     fscanf(snd_dat, "%d", &sounder_freqs_total);
     if (sounder_freqs_total > 12) sounder_freqs_total=12;
-    for (sounder_freq_count=0; sounder_freq_count < sounder_freqs_total; sounder_freq_cnt++)
-      fscanf(snd_dat, "%d", &sounder_freqs[sounder_freq_cnt]);
+    for (sounder_freq_count=0; sounder_freq_count < sounder_freqs_total; sounder_freq_count++)
+      fscanf(snd_dat, "%d", &sounder_freqs[sounder_freq_count]);
     sounder_freq_count=0;
     fclose(snd_dat);
   }
