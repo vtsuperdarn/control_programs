@@ -565,16 +565,19 @@ void write_sounding_record_new(char *progname, struct RadarParm *prm, struct Fit
     short int noise;
     short int frange;
     short int rsep;
+    short int nrang;
     short int gsct[SND_NRANG];
     short int qflg[SND_NRANG];
+    short int xqflg[SND_NRANG];
     char program_name[40];
   } header;
 
   struct data_struct {
     short int pwr;
     short int vel;
-    short int width;
-    short int AOA;
+    short int wid;
+    short int elv;
+    double phi;
   } data;
 
   char data_path[100], data_filename[50], filename[80];
@@ -620,12 +623,14 @@ void write_sounding_record_new(char *progname, struct RadarParm *prm, struct Fit
   header.noise= prm->noise.mean;
   header.frange= prm->frang;
   header.rsep= prm->rsep;
+  header.nrang= SND_NRANG;
   memcpy(header.program_name, progname, sizeof(header.program_name));
 
   /* zero out the gscat and qual bytes */
   for( i=0; i< SND_NRANG; i++ ) {
     header.gsct[i]= fit->rng[i].gsct;
     header.qflg[i]= fit->rng[i].qflg;
+    header.xqflg[i]= fit->xrng[i].qflg;
     good_ranges[i]= (fit->rng[i].qflg == 1);
   }
 
@@ -640,10 +645,12 @@ void write_sounding_record_new(char *progname, struct RadarParm *prm, struct Fit
       data.pwr= fit->rng[i].p_l;
       /* do the velocity */
       data.vel= fit->rng[i].v;
-      /* do the AOA */
-      data.AOA= fit->elv[i].normal;
       /* do the width */
-      data.width= fit->rng[i].w_l;
+      data.wid= fit->rng[i].w_l;
+      /* do the elevation angle */
+      data.elv= fit->elv[i].normal;
+      /* do the phase */
+      data.phi= fit->xrng[i].phi0;
       /* write out the data structure */
       fwrite(&data, sizeof(data), 1, out);
     }
