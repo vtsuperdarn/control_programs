@@ -113,12 +113,11 @@ int main(int argc,char *argv[]) {
   pid_t sid;
   int exitpoll=0;
 
-  int scnsc=120;
+  int scnsc=60;
   int scnus=0;
   int skip;
   int cnt=0;
 
-  unsigned char fast=0;
   unsigned char discretion=0;
 
   /* ---------- Beam sequence for interleavedscan ---------- */
@@ -172,9 +171,10 @@ int main(int argc,char *argv[]) {
   int sounder_beams_total=8, odd_beams=0;
   int sounder_freq;
   int sounder_beam_loop=1;
-  int normal_intt=6;
-  int fast_intt=3;
-  int sounder_intt=2;
+  int fast_intt_sc=3;
+  int fast_intt_us=0;
+  int sounder_intt_sc=2;
+  int sounder_intt_us=0;
   float sounder_time, time_needed=1.25;
 
   sprintf(snd_filename, "%s/sounder.dat", getenv("SD_HDWPATH"));
@@ -209,18 +209,18 @@ int main(int argc,char *argv[]) {
                   &dmpinc,&nmpinc,
                   &frqrng,&xcnt);
 
-  // For 2-min normal scan
-  cp=195; /* interleavesound */
-  intsc=normal_intt;
-  intus=0;
-  mppul=8;
-  mplgs=23;
-  mpinc=1500;
-  dmpinc=1500;
-  nrang=75;
-  rsep=45;
-  txpl=300; /* recalculated below with rsep */ 
-  frang=180;
+  // For 1-min normal scan
+  cp     = 197;
+  intsc  = fast_intt_sc;
+  intus  = fast_intt_us;
+  mppul  = 8;
+  mplgs  = 23;
+  mpinc  = 1500;
+  dmpinc = 1500;
+  nrang  = 75;
+  rsep   = 45;
+  txpl   = 300; /* recalculated below with rsep */
+  frang  = 180;
 
   SiteStart();
 
@@ -246,8 +246,6 @@ int main(int argc,char *argv[]) {
   OptionAdd(&opt, "xcf", 'i', &xcnt);
   OptionAdd(&opt, "frqrng", 'i', &frqrng);
 
-  OptionAdd(&opt, "fast", 'x', &fast);
-
   arg=OptionProcess(1,argc,argv,&opt,NULL);
 
   if (sname==NULL) sname=sdname;
@@ -260,15 +258,6 @@ int main(int argc,char *argv[]) {
 
   SiteSetupHardware();
 
-  /* the parameters are set for fastscan */
-  if (fast) {
-     cp=197;  /* fast interleavesound */
-     scnsc=60;
-     scnus=0;
-     intsc=fast_intt;
-     intus=0;
-  }
-
   // set a negative CPID for discretionary time
   if ( discretion) cp= -cp;
 
@@ -276,8 +265,7 @@ int main(int argc,char *argv[]) {
   txpl=(rsep*20)/3;
 
   // set the program name
-  if (fast) sprintf(progname,"interleavesound (fast)");
-  else sprintf(progname,"interleavesound");
+  sprintf(progname,"interleavesound (fast)");
 
   OpsFitACFStart();
 
@@ -428,7 +416,8 @@ int main(int argc,char *argv[]) {
 
       sounder_beam_loop = ( sounder_time-(float)sounder_intt > time_needed );
       while (sounder_beam_loop) {
-        intsc=sounder_intt;
+        intsc=sounder_intt_sc;
+        intus=sounder_intt_us;
 
         /* set the beam */
         bmnum=sounder_beams[sounder_beam_count]+odd_beams;
@@ -515,8 +504,8 @@ int main(int argc,char *argv[]) {
       }
 
       /* now wait for the next interleavescan */
-      intsc=normal_intt;
-      if (fast) intsc=fast_intt;
+      intsc=fast_intt_sc;
+      intus=fast_intt_us;
       OpsWaitBoundary(scnsc,scnus);
     }
 

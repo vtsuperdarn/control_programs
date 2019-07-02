@@ -4,7 +4,7 @@ interleavesound
 
 Control Program ID (CPID):
 =========================
-195/197
+197
 
 Parameters:
 ==========
