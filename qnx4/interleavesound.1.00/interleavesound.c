@@ -47,12 +47,8 @@
  
 */
 
-#define UCONT_NAME "ucont_moni"
-
 #define SCHEDULER "schedule"
 #define ERRLOG "errlog"
-
-void u_read_uconts(void);
 
 #define CONTROL_NAME "control_program"
 #define TASK_NAMES "echo_data","iqwrite","rawacfwrite","fitacfwrite"
@@ -61,8 +57,6 @@ char cmdlne[1024];
 char progid[80]={"$Id: interleavesound.c,v 1.0 2019/06/14 egthomas Exp $"};
 char progname[256];
 struct TaskID *errlog;
-
-pid_t uucont_proxy;
 
 char *tasklist[]=
  { TASK_NAMES,
@@ -196,10 +190,6 @@ int main(int argc,char *argv[]) {
 
   /* ------------------------------------------------------- */
 
-
-  if ((uucont_proxy=SiteInitProxy(UCONT_NAME))==-1) {
-    perror("cannot attach proxy");
-  }
 
   strcpy(cmdlne,argv[0]);
   for (n=1;n<argc;n++) {
@@ -346,8 +336,6 @@ int main(int argc,char *argv[]) {
       sprintf(logtxt,"Integrating beam:%d intt:%ds.%dus (%d:%d:%d:%d)",bmnum,
                       intsc,intus,hr,mt,sc,us);
       ErrLog(errlog,progname,logtxt);
-
-      u_read_uconts();
 
       ErrLog(errlog,progname,"Setting beam.");
 
@@ -541,14 +529,6 @@ int main(int argc,char *argv[]) {
   RShellTerminate(sid);
   return 0;
 } 
-
-/* Sends a proxy message to the microcontroller monitoring
-   task every beam.
-*/
-
-void u_read_uconts() {
-  if (uucont_proxy != 0) Trigger(uucont_proxy);
-}
 
 /********************** function write_sounding_record_new() ************************/
 /* changed the data structure */
