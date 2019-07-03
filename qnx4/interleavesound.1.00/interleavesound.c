@@ -110,7 +110,6 @@ int main(int argc,char *argv[]) {
   char logtxt[1024];
 
   int n;
-  pid_t sid;
   int exitpoll=0;
 
   int scnsc=60;
