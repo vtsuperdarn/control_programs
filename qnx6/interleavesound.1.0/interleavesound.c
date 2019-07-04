@@ -157,7 +157,9 @@ int main(int argc,char *argv[]) {
   int fast_intt_us=500000;
   int sounder_intt_sc=1;
   int sounder_intt_us=500000;
-  float sounder_time, time_needed=1.25;
+  float sounder_time, sounder_intt, time_needed=1.25;
+
+  sounder_intt = sounder_intt_sc + sounder_intt_us/1000000.0;
 
   char *snd_dir;
   char data_path[100];
@@ -457,7 +459,7 @@ int main(int argc,char *argv[]) {
       TimeReadClock(&yr,&mo,&dy,&hr,&mt,&sc,&us);
       sounder_time= 60.0 - ( sc + us/ 1000000.0);
 
-      sounder_beam_loop= ( sounder_time-(float)sounder_intt > time_needed );
+      sounder_beam_loop= ( sounder_time-sounder_intt > time_needed );
       while(sounder_beam_loop) {
         intsc=sounder_intt_sc;
         intus=sounder_intt_us;
@@ -556,7 +558,7 @@ int main(int argc,char *argv[]) {
         /* see if we have enough time for another go round */
         TimeReadClock(&yr, &mo, &dy, &hr, &mt, &sc, &us);
         sounder_time= 60.0 - ( sc + us/ 1000000.0);
-        sounder_beam_loop= ( sounder_time-(float)sounder_intt > time_needed );
+        sounder_beam_loop= ( sounder_time-sounder_intt > time_needed );
       }
 
       /* now wait for the next interleavescan */
