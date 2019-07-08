@@ -162,7 +162,7 @@ int main(int argc,char *argv[]) {
   /* ---------------- Variables for sounding --------------- */
   char snd_filename[100];
   FILE *snd_dat;
-  /* If the file $SD_HDWPATH/sounder.dat exists, the next two parameters are read from it */
+  /* If the file $SD_HDWPATH/interleave_sounder.dat exists, the next two parameters are read from it */
   /* the file contains one integer value per line */
   int sounder_freqs_total=8;
   int sounder_freqs[MAX_SND_FREQS] = {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0};
@@ -179,7 +179,8 @@ int main(int argc,char *argv[]) {
 
   sounder_intt = sounder_intt_sc + sounder_intt_us/1000000.0;
 
-  sprintf(snd_filename, "%s/sounder.dat", getenv("SD_HDWPATH"));
+  sprintf(snd_filename, "%s/interleave_sounder.dat", getenv("SD_HDWPATH"));
+  fprintf(stderr, "Checking Sounder File: %s\n", snd_filename);
   snd_dat=fopen(snd_filename, "r");
   if (snd_dat != NULL) {
     fscanf(snd_dat, "%d", &sounder_freqs_total);
@@ -188,8 +189,10 @@ int main(int argc,char *argv[]) {
       fscanf(snd_dat, "%d", &sounder_freqs[sounder_freq_count]);
     sounder_freq_count=0;
     fclose(snd_dat);
+    fprintf(stderr,"Sounder File: %s read\n", snd_filename);
+  } else {
+    fprintf(stderr,"Sounder File: %s not found\n", snd_filename);
   }
-
   /* ------------------------------------------------------- */
 
 
@@ -558,6 +561,8 @@ void write_sounding_record_new(char *progname, struct RadarParm *prm, struct Fit
   char *snd_dir;
   FILE *out;
 
+  char logtxt[1024];
+
   struct sounder_struct *act_snd_data;
 
 
@@ -583,6 +588,8 @@ void write_sounding_record_new(char *progname, struct RadarParm *prm, struct Fit
   out=fopen(filename,"a");
   if(out==NULL) {
     /* crap. might as well go home */
+    sprintf(logtxt,"Unable to open sounding file:%s",filename);
+    ErrLog(errlog,progname,logtxt);
     return;
   }
 

@@ -26,17 +26,25 @@ scans through a set of up to 12 frequencies and through all
 beams [even/odd]. Note that unlike normalsound, this information
 is not used to adjust the radar operating frequency in real-time.
 
-The radar-specific sounder.dat file should contain the
-following values (one per line):
-Number of sounder frequencies
+The control program requires a radar-specific sounding file called
+"interleave_sounder.dat". By default, the control program will look
+for this file in the SD_SND_PATH directory. This file should
+contain the following values (one per line):
+
+Number of sounder frequencies (maximum of 12)
 The sounder frequencies [kHz]
 
 If this file does not exist, default values are used. This
 is not a good idea, as the program may try to sound at
 forbidden frequencies.
 
-The sounding data are written to *.snd files, for each beam
-one header and data record for each good [qflg=1] range.
+The sounding data are written to *.snd files in the SD_SND_PATH
+directory. If this environment variable is not set, the control
+program will attempt to write the sounding data to the "/data/ros/snd"
+directory. If this directory does not exist, no sounding data will
+be written. The 2-hr sounding files contain one header per
+beam/frequency sounding followed by data records for each good
+[qflg=1] range.
 
 Source:
 ======
