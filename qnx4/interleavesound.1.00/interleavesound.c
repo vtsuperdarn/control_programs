@@ -563,8 +563,6 @@ void write_sounding_record_new(char *progname, struct RadarParm *prm, struct Fit
 
   char logtxt[1024];
 
-  struct sounder_struct *act_snd_data;
-
 
   /* set up the data directory */
   /* get the snd data dir */
