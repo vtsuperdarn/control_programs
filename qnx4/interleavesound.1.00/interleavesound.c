@@ -270,7 +270,7 @@ int main(int argc,char *argv[]) {
   txpl=(rsep*20)/3;
 
   // set the program name
-  sprintf(progname,"interleavesound (fast)");
+  sprintf(progname,"interleavesound");
 
   OpsFitACFStart();
 
