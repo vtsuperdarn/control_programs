@@ -536,7 +536,7 @@ void write_sounding_record_new(char *progname, struct RadarParm *prm, struct Fit
     short int site_id;
     short int beam_no;
     short int freq;
-    short int noise;
+    long int noise;
     short int frange;
     short int rsep;
     short int nrang;

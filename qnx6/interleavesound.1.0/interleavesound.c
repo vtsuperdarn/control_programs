@@ -46,7 +46,7 @@
 #define SND_NRANG 75
 #define MAX_SND_FREQS 12
 
-void write_sounding_record_new(char *progname, struct RadarParm *prm struct FitData *fit);
+void write_sounding_record_new(char *progname, struct RadarParm *prm, struct FitData *fit);
 
 #define RT_TASK 2
 
@@ -609,11 +609,11 @@ void write_sounding_record_new(char *progname, struct RadarParm *prm, struct Fit
   int i;
 
   struct header_struct {
-    long int stime;
+    int stime;
     short int site_id;
     short int beam_no;
     short int freq;
-    short int noise;
+    int noise;
     short int frange;
     short int rsep;
     short int nrang;
