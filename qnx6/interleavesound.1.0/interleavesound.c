@@ -48,7 +48,7 @@
 
 void write_sounding_record_new(char *progname, struct RadarParm *prm, struct FitData *fit);
 
-#define RT_TASK 2
+#define RT_TASK 3
 
 char *ststr=NULL;
 char *dfststr="tst";
@@ -63,10 +63,10 @@ struct TCPIPMsgHost errlog={"127.0.0.1",44100,-1};
 struct TCPIPMsgHost shell={"127.0.0.1",44101,-1};
 int tnum=4;      
 struct TCPIPMsgHost task[4]={
-                              {"127.0.0.1",1,-1}, /* iqwrite */
-                              {"127.0.0.1",2,-1}, /* rawacfwrite */
-                              {"127.0.0.1",3,-1}, /* fitacfwrite */
-                              {"127.0.0.1",4,-1}  /* rtserver */
+  {"127.0.0.1",1,-1}, /* iqwrite */
+  {"127.0.0.1",2,-1}, /* rawacfwrite */
+  {"127.0.0.1",3,-1}, /* fitacfwrite */
+  {"127.0.0.1",4,-1}  /* rtserver */
                             };
 
 void usage(void);
