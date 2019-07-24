@@ -148,7 +148,7 @@ int main(int argc,char *argv[]) {
   int sounder_freqs[MAX_SND_FREQS]= {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0 };
   int *sounder_beams;
   int sounder_beamse[]={0,2,4,6,8,10,12,14};        /* beam sequences for 24-beam MSI radars using only */
-  int sounder_beamsw[]={22,20,18,16,14,12,10,8};    /*  the 16 most meridional beams */
+  int sounder_beamsw[]={23,21,19,17,15,13,11,9};    /*  the 16 most meridional beams */
   int sounder_freq_count=0, sounder_beam_count=0;
   int sounder_beams_total=8, odd_beams=0;
   int sounder_freq;
