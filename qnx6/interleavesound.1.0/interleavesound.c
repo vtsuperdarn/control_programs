@@ -220,6 +220,11 @@ int main(int argc,char *argv[]) {
       Important: need to do this here because we need stid and ststr */
   arg=OptionProcess(1,argc,argv,&opt,NULL);
 
+  if (hlp) {
+    usage();
+    return (-1);
+  }
+
   /* start time of each integration period */
   for (i=0; i<nintgs; i++)
     intgt[i] = i*(intsc + intus*1e-6);
@@ -233,21 +238,6 @@ int main(int argc,char *argv[]) {
     sounder_beams = sounder_beamsw;
   } else {
     printf("Error: Not intended for station %s\n", ststr);
-    return (-1);
-  }
-
-  if (hlp) {
-    usage();
-
-/*    printf("  start beam: %2d\n", sbm);	*/
-/*    printf("  end   beam: %2d\n", ebm);	*/
-    printf("\n");
-    printf("sqnc  stme  bmno\n");
-    for (i=0; i<nintgs; i++) {
-      printf(" %2d   %3d    %2d", i, intgt[i], bms[i]);
-      printf("\n");
-    }
-
     return (-1);
   }
 
