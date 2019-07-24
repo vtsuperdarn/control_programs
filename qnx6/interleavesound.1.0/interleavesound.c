@@ -227,6 +227,8 @@ int main(int argc,char *argv[]) {
   for (i=0; i<nintgs; i++)
     intgt[i] = i*(intsc + intus*1e-6);
 
+  if (ststr==NULL) ststr=dfststr;
+
   /* Point to the beams here */
   if (strcmp(ststr,"cve") == 0) {
     bms = bmse;
@@ -241,8 +243,6 @@ int main(int argc,char *argv[]) {
 
   /* end of main Dartmouth mods */
   /* not sure if -nrang commandline option works */
-
-  if (ststr==NULL) ststr=dfststr;
 
   if ((errlog.sock=TCPIPMsgOpen(errlog.host,errlog.port))==-1) {
     fprintf(stderr,"Error connecting to error log.\n");
