@@ -42,7 +42,7 @@ The sounding data are written to *.snd files in the SD_SND_PATH
 directory. If this environment variable is not set, the control
 program will attempt to write the sounding data to the "/data/ros/snd"
 directory. If this directory does not exist, no sounding data will
-be written. The 2-hr sounding files contain one a reduced set of
+be written. The 2-hr sounding files contain a reduced set of
 radar operating parameters and fitted values (e.g., velocity,
 power, spectral width, phi0, elevation) in dmap-format.
 
