@@ -21,6 +21,9 @@
 
 */
 
+#define SND_MAJOR_REVISION 1
+#define SND_MINOR_REVISION 0
+
 int SndWrite(int fid,struct RadarParm *prm,struct FitData *fit) {
 
   int s,c;
@@ -48,8 +51,16 @@ int SndWrite(int fid,struct RadarParm *prm,struct FitData *fit) {
 
   float sky_noise;
 
+  int16 major_rev[1];
+  int16 minor_rev[1];
+
+  major_rev[0] = SND_MAJOR_REVISION;
+  minor_rev[0] = SND_MINOR_REVISION;
+
   data=DataMapMake();
 
+  DataMapAddScalar(data,"radar.revision.major",DATACHAR,&prm->revision.major);
+  DataMapAddScalar(data,"radar.revision.minor",DATACHAR,&prm->revision.minor);
   DataMapAddScalar(data,"cp",DATASHORT,&prm->cp);
   DataMapAddScalar(data,"stid",DATASHORT,&prm->stid);
   DataMapAddScalar(data,"time.yr",DATASHORT,&prm->time.yr);
@@ -79,8 +90,10 @@ int SndWrite(int fid,struct RadarParm *prm,struct FitData *fit) {
   DataMapAddScalar(data,"tfreq",DATASHORT,&prm->tfreq);
 
   sky_noise=fit->noise.skynoise;
-
   DataMapAddScalar(data,"noise.sky",DATAFLOAT,&sky_noise);
+
+  DataMapAddScalar(ptr,"snd.revision.major",DATASHORT,major_rev);
+  DataMapAddScalar(ptr,"snd.revision.minor",DATASHORT,minor_rev);
 
   snum=0;
   for (c=0;c<prm->nrang;c++) {
