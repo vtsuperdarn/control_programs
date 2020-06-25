@@ -11,6 +11,7 @@
 #include <string.h>
 #include <time.h>
 #include "rtypes.h"
+#include "dmap.h"
 #include "option.h"
 #include "rtime.h"
 #include "limit.h"
@@ -39,6 +40,8 @@
 #include "sync.h"
 #include "interface.h"
 #include "hdw.h"
+
+#include "sndwrite.h"
 
 /*
  $Log: interleavesound.c,v $
@@ -480,7 +483,7 @@ int main(int argc,char *argv[]) {
         ErrLog(errlog, progname, logtxt);
 
         /* save the sounding mode data */
-        write_sounding_record_new(progname, &prm, &fit);
+        write_sounding_record_dmap(progname, &prm, &fit);
 
         ErrLog(errlog, progname, "Polling SND for exit.");
         exitpoll=RadarShell(sid,&rstable);
@@ -524,112 +527,52 @@ int main(int argc,char *argv[]) {
   return 0;
 } 
 
-/********************** function write_sounding_record_new() ************************/
-/* changed the data structure */
 
-void write_sounding_record_new(char *progname, struct RadarParm *prm, struct FitData *fit)
-{
-  int i;
+/********************** function write_sounding_record_dmap() ************************/
+/* changed the output to dmap format */
 
-  struct header_struct {
-    long int stime;
-    short int site_id;
-    short int beam_no;
-    short int freq;
-    long int noise;
-    short int frange;
-    short int rsep;
-    short int nrang;
-    short int gsct[SND_NRANG];
-    short int qflg[SND_NRANG];
-    short int xqflg[SND_NRANG];
-    char program_name[40];
-  } header;
-
-  struct data_struct {
-    short int pwr;
-    short int vel;
-    short int wid;
-    short int elv;
-    double phi;
-  } data;
+void write_sounding_record_dmap(char *progname, struct RadarParm *prm, struct FitData *fit) {
 
   char data_path[100], data_filename[50], filename[80];
-
-  int  good_ranges[SND_NRANG];
 
   char *snd_dir;
   FILE *out;
 
   char logtxt[1024];
-
+  int status;
 
   /* set up the data directory */
   /* get the snd data dir */
   snd_dir= getenv("SD_SND_PATH");
-  if (snd_dir==NULL)
+  if (snd_dir == NULL)
     sprintf(data_path,"/data/snd/");
   else {
     memcpy(data_path,snd_dir,strlen(snd_dir));
-    data_path[strlen(snd_dir)]= '/';
-    data_path[strlen(snd_dir) + 1]= 0;
+    data_path[strlen(snd_dir)] = '/';
+    data_path[strlen(snd_dir)+1] = 0;
   }
 
   /* make up the filename */
-  /* YYYYMMDDHH */
-  sprintf(data_filename, "%04d%02d%02d%02d%s", prm->time.yr, prm->time.mo, prm->time.dy, (prm->time.hr/ 2)* 2, getenv("SD_RADARCODE"));
+  /* YYYYMMDD.HH.rad.snd */
+  sprintf(data_filename, "%04d%02d%02d.%02d.%s", prm->time.yr, prm->time.mo, prm->time.dy, (prm->time.hr/ 2)* 2, getenv("SD_RADARCODE"));
 
   /* finally make the filename */
   sprintf(filename, "%s%s.snd", data_path, data_filename);
 
   /* open the output file */
   out=fopen(filename,"a");
-  if(out==NULL) {
+  if (out == NULL) {
     /* crap. might as well go home */
     sprintf(logtxt,"Unable to open sounding file:%s",filename);
     ErrLog(errlog,progname,logtxt);
     return;
   }
 
-  /* make the header */
-  header.stime= TimeYMDHMSToEpoch(prm->time.yr, prm->time.mo, prm->time.dy, prm->time.hr, prm->time.mt, prm->time.sc);
-  header.site_id= prm->stid;
-  header.beam_no= prm->bmnum;
-  header.freq= prm->tfreq;
-  header.noise= prm->noise.mean;
-  header.frange= prm->frang;
-  header.rsep= prm->rsep;
-  header.nrang= SND_NRANG;
-  memcpy(header.program_name, progname, sizeof(header.program_name));
-
-  /* zero out the gscat and qual bytes */
-  for( i=0; i< SND_NRANG; i++ ) {
-    header.gsct[i]= fit->rng[i].gsct;
-    header.qflg[i]= fit->rng[i].qflg;
-    header.xqflg[i]= fit->xrng[i].qflg;
-    good_ranges[i]= (fit->rng[i].qflg == 1);
+  status=SndFwrite(out,&prm,&fit);
+  if (status == -1) {
+    ErrLog(errlog,progname,"Error writing sounding record.");
   }
 
-  /* write out the header */
-  fwrite(&header, sizeof(header), 1, out);
-
-  /* scale the fit data into the char/shorts */
-  for( i=0; i< SND_NRANG; i++ ) {
-    /* only do the good ranges */
-    if (good_ranges[i]) {
-      /* do the power */
-      data.pwr= fit->rng[i].p_l;
-      /* do the velocity */
-      data.vel= fit->rng[i].v;
-      /* do the width */
-      data.wid= fit->rng[i].w_l;
-      /* do the elevation angle */
-      data.elv= fit->elv[i].normal;
-      /* do the phase */
-      data.phi= fit->xrng[i].phi0;
-      /* write out the data structure */
-      fwrite(&data, sizeof(data), 1, out);
-    }
-  }
   fclose(out);
+
 }
