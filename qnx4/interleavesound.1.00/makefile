@@ -10,7 +10,7 @@ INCLUDE=-I$(IPATH)/base -I$(IPATH)/general -I$(IPATH)/superdarn \
         -I$(USR_IPATH)/radarqnx4/ops \
         -I$(USR_IPATH)/radarqnx4/site.$(SD_RADARCODE)
 
-OBJS = interleavesound.o
+OBJS = interleavesound.o sndwrite.o
 SRC=interleavesound.c sndwrite.c sndwrite.h
 
 OUTPUT = $(USR_BINPATH)/interleavesound

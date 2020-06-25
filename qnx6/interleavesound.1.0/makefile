@@ -6,7 +6,7 @@ include $(MAKECFG).$(SYSTEM)
 
 INCLUDE=-I$(IPATH)/base -I$(IPATH)/general -I$(IPATH)/superdarn \
         -I$(USR_IPATH)/superdarn
-OBJS = interleavesound.o
+OBJS = interleavesound.o sndwrite.o
 SRC=interleavesound.c sndwrite.c sndwrite.h
 DSTPATH = $(USR_BINPATH)
 OUTPUT = interleavesound
