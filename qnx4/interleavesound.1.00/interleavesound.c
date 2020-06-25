@@ -68,7 +68,6 @@ char *tasklist[]=
 int arg=0;
 struct OptionData opt;
 
-#define SND_NRANG 75
 #define MAX_SND_FREQS 12
 
 int main(int argc,char *argv[]) {
@@ -543,7 +542,7 @@ void write_sounding_record_dmap(char *progname, struct RadarParm *prm, struct Fi
 
   /* set up the data directory */
   /* get the snd data dir */
-  snd_dir= getenv("SD_SND_PATH");
+  snd_dir = getenv("SD_SND_PATH");
   if (snd_dir == NULL)
     sprintf(data_path,"/data/snd/");
   else {
@@ -574,5 +573,4 @@ void write_sounding_record_dmap(char *progname, struct RadarParm *prm, struct Fi
   }
 
   fclose(out);
-
 }

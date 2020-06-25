@@ -1,6 +1,6 @@
 /* sndwrite.c
    ========== 
-   Author: R.J.Barnes
+   Author: E.G.Thomas
 */
 
 #include <stdio.h>
@@ -75,9 +75,11 @@ int SndWrite(int fid,struct RadarParm *prm,struct FitData *fit) {
   DataMapAddScalar(data,"nrang",DATASHORT,&prm->nrang);
   DataMapAddScalar(data,"frang",DATASHORT,&prm->frang);
   DataMapAddScalar(data,"rsep",DATASHORT,&prm->rsep);
+  DataMapAddScalar(data,"xcf",DATASHORT,&prm->xcf);
   DataMapAddScalar(data,"tfreq",DATASHORT,&prm->tfreq);
 
   sky_noise=fit->noise.skynoise;
+
   DataMapAddScalar(data,"noise.sky",DATAFLOAT,&sky_noise);
 
   snum=0;
