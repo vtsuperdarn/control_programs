@@ -242,6 +242,7 @@ int main(int argc,char *argv[]) {
   OptionAdd(&opt, "el", 't', &ename);
   OptionAdd(&opt, "sc", 't', &sname);
 
+  OptionAdd(&opt, "nrang", 'i', &nrang);
   OptionAdd(&opt, "frang", 'i', &frang);
   OptionAdd(&opt, "rsep", 'i', &rsep);
 
