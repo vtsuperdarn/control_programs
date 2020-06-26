@@ -166,30 +166,30 @@ int main(int argc,char *argv[]) {
   FILE *snd_dat;
   /* If the file $SD_HDWPATH/interleave_sounder.dat exists, the next two parameters are read from it */
   /* the file contains one integer value per line */
-  int sounder_freqs_total=8;
-  int sounder_freqs[MAX_SND_FREQS] = {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0};
-  int sounder_beams[] = {0,2,4,6,8,10,12,14};
-  int sounder_freq_count=0, sounder_beam_count=0;
-  int sounder_beams_total=8, odd_beams=0;
-  int sounder_freq;
-  int sounder_beam_loop=1;
+  int snd_freqs_tot=8;
+  int snd_freqs[MAX_SND_FREQS] = {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0};
+  int snd_bms[] = {0,2,4,6,8,10,12,14};
+  int snd_freq_cnt=0, snd_bm_cnt=0;
+  int snd_bms_tot=8, odd_beams=0;
+  int snd_freq;
   int fast_intt_sc=3;
   int fast_intt_us=0;
-  int sounder_intt_sc=2;
-  int sounder_intt_us=0;
-  float sounder_time, sounder_intt, time_needed=1.25;
+  int snd_intt_sc=2;
+  int snd_intt_us=0;
+  float snd_time, snd_intt, time_needed=1.25;
 
-  sounder_intt = sounder_intt_sc + sounder_intt_us/1000000.0;
+  snd_intt = snd_intt_sc + snd_intt_us/1000000.0;
 
+  /* load the sounder frequencies from file if present */
   sprintf(snd_filename, "%s/interleave_sounder.dat", getenv("SD_HDWPATH"));
   fprintf(stderr, "Checking Sounder File: %s\n", snd_filename);
-  snd_dat=fopen(snd_filename, "r");
+  snd_dat = fopen(snd_filename, "r");
   if (snd_dat != NULL) {
-    fscanf(snd_dat, "%d", &sounder_freqs_total);
-    if (sounder_freqs_total > 12) sounder_freqs_total=12;
-    for (sounder_freq_count=0; sounder_freq_count < sounder_freqs_total; sounder_freq_count++)
-      fscanf(snd_dat, "%d", &sounder_freqs[sounder_freq_count]);
-    sounder_freq_count=0;
+    fscanf(snd_dat, "%d", &snd_freqs_tot);
+    if (snd_freqs_tot > 12) snd_freqs_tot = 12;
+    for (snd_freq_cnt=0; snd_freq_cnt < snd_freqs_tot; snder_freq_cnt++)
+      fscanf(snd_dat, "%d", &snd_freqs[snd_freq_cnt]);
+    snd_freq_cnt = 0;
     fclose(snd_dat);
     fprintf(stderr,"Sounder File: %s read\n", snd_filename);
   } else {
@@ -295,7 +295,7 @@ int main(int argc,char *argv[]) {
       }
     }
 
-    scan=1;
+    scan = 1;
 
     ErrLog(errlog,progname,"Starting scan.");
 
@@ -409,29 +409,28 @@ int main(int argc,char *argv[]) {
     } while (1);
     ErrLog(errlog,progname,"Waiting for scan boundary.");
 
-    if (exitpoll==0) {
+    if (exitpoll == 0) {
       /* In here comes the sounder code */
       /* set the "sounder mode" scan variable */
-      scan=-2;
+      scan = -2;
 
       /* set the xcf variable to do cross-correlations (AOA) */
-      xcf=1;
+      xcf = 1;
 
       /* we have time until the end of the minute to do sounding */
       /* minus a safety factor given in time_needed */
       TimeReadClock(&yr,&mo,&dy,&hr,&mt,&sc,&us);
-      sounder_time = 60.0 - ( sc + us/ 1000000.0);
+      snd_time = 60.0 - ( sc + us/ 1000000.0);
 
-      sounder_beam_loop = ( sounder_time-sounder_intt > time_needed );
-      while (sounder_beam_loop) {
-        intsc=sounder_intt_sc;
-        intus=sounder_intt_us;
+      while (snd_time-snd_intt > time_needed) {
+        intsc = snd_intt_sc;
+        intus = snd_intt_us;
 
         /* set the beam */
-        bmnum=sounder_beams[sounder_beam_count]+odd_beams;
+        bmnum = snd_bms[snd_bm_cnt]+odd_beams;
 
-        /* sounder_freq will be an array of frequencies to step through */
-        sounder_freq=sounder_freqs[sounder_freq_count];
+        /* snd_freq will be an array of frequencies to step through */
+        snd_freq = snd_freqs[snd_freq_cnt];
 
         /* the scanning code here */
         sprintf(logtxt,"Integrating SND beam:%d intt:%ds.%dus (%d:%d:%d:%d)",bmnum,intsc,intus,hr,mt,sc,us);
@@ -440,15 +439,15 @@ int main(int argc,char *argv[]) {
         SiteSetIntt(intsc,intus);
         SiteSetBeam(bmnum);
         ErrLog(errlog, progname, "Doing SND clear frequency search."); 
-        if (SiteFCLR( sounder_freq, sounder_freq + frqrng)==FREQ_LOCAL)
+        if (SiteFCLR( snd_freq, snd_freq + frqrng)==FREQ_LOCAL)
           ErrLog(errlog,progname,"Frequency Synthesizer in local mode.");
         SiteSetFreq(tfreq);
 /*
         sprintf(logtxt,"Transmitting SND on: %d (Noise=%g)",tfreq,noise);
         ErrLog( errlog, progname, logtxt);
 */
-        tsgid=SiteTimeSeq(ptab);
-        nave=SiteIntegrate(lags);
+        tsgid = SiteTimeSeq(ptab);
+        nave = SiteIntegrate(lags);
         if (nave < 0) {
           sprintf(logtxt, "SND integration error: %d", nave);
           ErrLog(errlog,progname, logtxt); 
@@ -479,41 +478,36 @@ int main(int argc,char *argv[]) {
         /* Only send these to echo_data; otherwise they get written to the data files */
         RMsgSndSend(tlist[ 0], &msg);
 
-        sprintf(logtxt, "SBC: %d  SFC: %d\n", sounder_beam_count, sounder_freq_count);
+        sprintf(logtxt, "SBC: %d  SFC: %d\n", snd_bm_cnt, snd_freq_cnt);
         ErrLog(errlog, progname, logtxt);
 
         /* save the sounding mode data */
-        write_sounding_record_dmap(progname, &prm, &fit);
+        write_snd_record(progname, &prm, &fit);
 
         ErrLog(errlog, progname, "Polling SND for exit.");
         exitpoll=RadarShell(sid,&rstable);
         if (exitpoll !=0) break;
 
         /* check for the end of a beam loop */
-        sounder_freq_count++;
-        if (sounder_freq_count >= sounder_freqs_total) {
+        snd_freq_cnt++;
+        if (snd_freq_cnt >= snd_freqs_tot) {
           /* reset the freq counter and increment the beam counter */
-          sounder_freq_count=0;
-          sounder_beam_count++;
-          if (sounder_beam_count>=sounder_beams_total) {
-            sounder_beam_count=0;
-            if (odd_beams==0)
-              odd_beams=1;
-            else
-              odd_beams=0;
-            sounder_freq_count=0;
+          snd_freq_cnt = 0;
+          snd_bm_cnt++;
+          if (snd_bm_cnt >= snd_bms_tot) {
+            snd_bm_cnt = 0;
+            odd_beams = !odd_beams;
           }
         }
 
         /* see if we have enough time for another go round */
         TimeReadClock(&yr, &mo, &dy, &hr, &mt, &sc, &us);
-        sounder_time= 60.0 - ( sc + us/ 1000000.0);
-        sounder_beam_loop=( sounder_time-sounder_intt > time_needed );
+        snd_time = 60.0 - (sc + us*1e-6);
       }
 
       /* now wait for the next interleavescan */
-      intsc=fast_intt_sc;
-      intus=fast_intt_us;
+      intsc = fast_intt_sc;
+      intus = fast_intt_us;
       OpsWaitBoundary(scnsc,scnus);
     }
 
@@ -528,10 +522,10 @@ int main(int argc,char *argv[]) {
 } 
 
 
-/********************** function write_sounding_record_dmap() ************************/
+/********************** function write_snd_record() ************************/
 /* changed the output to dmap format */
 
-void write_sounding_record_dmap(char *progname, struct RadarParm *prm, struct FitData *fit) {
+void write_snd_record(char *progname, struct RadarParm *prm, struct FitData *fit) {
 
   char data_path[100], data_filename[50], filename[80];
 
