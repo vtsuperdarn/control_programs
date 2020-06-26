@@ -187,7 +187,7 @@ int main(int argc,char *argv[]) {
   if (snd_dat != NULL) {
     fscanf(snd_dat, "%d", &snd_freqs_tot);
     if (snd_freqs_tot > 12) snd_freqs_tot = 12;
-    for (snd_freq_cnt=0; snd_freq_cnt < snd_freqs_tot; snder_freq_cnt++)
+    for (snd_freq_cnt=0; snd_freq_cnt < snd_freqs_tot; snd_freq_cnt++)
       fscanf(snd_dat, "%d", &snd_freqs[snd_freq_cnt]);
     snd_freq_cnt = 0;
     fclose(snd_dat);
