@@ -45,9 +45,6 @@ int SndWrite(int fid,struct RadarParm *prm,struct FitData *fit) {
 
   float phi0[MAX_RANGE];
   float phi0_e[MAX_RANGE];
-  float elv[MAX_RANGE];
-  float elv_low[MAX_RANGE];
-  float elv_high[MAX_RANGE];
 
   float sky_noise;
 
@@ -112,9 +109,6 @@ int SndWrite(int fid,struct RadarParm *prm,struct FitData *fit) {
 
       phi0[snum]=fit->xrng[c].phi0;
       phi0_e[snum]=fit->xrng[c].phi0_err;
-      elv[snum]=fit->elv[c].normal;
-      elv_low[snum]=fit->elv[c].low;
-      elv_high[snum]=fit->elv[c].high;
 
       snum++;
     }
@@ -138,9 +132,6 @@ int SndWrite(int fid,struct RadarParm *prm,struct FitData *fit) {
 
       DataMapAddArray(data,"phi0",DATAFLOAT,1,&xnum,phi0);
       DataMapAddArray(data,"phi0_e",DATAFLOAT,1,&xnum,phi0_e);
-      DataMapAddArray(data,"elv",DATAFLOAT,1,&xnum,elv);
-      DataMapAddArray(data,"elv_low",DATAFLOAT,1,&xnum,elv_low);
-      DataMapAddArray(data,"elv_high",DATAFLOAT,1,&xnum,elv_high);
     }
   }
 

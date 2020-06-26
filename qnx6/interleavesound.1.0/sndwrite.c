@@ -18,14 +18,10 @@
 #define SND_MAJOR_REVISION 1
 #define SND_MINOR_REVISION 0
 
-int SndWrite(int fid,struct RadarParm *prm,
-             struct FitData *fit) {
+int SndWrite(int fid, struct RadarParm *prm, struct FitData *fit) {
 
   int s;
   struct DataMap *ptr=NULL;
-
-  ptr=DataMapMake();
-  if (ptr==NULL) return -1;
 
   int c,x;
   int32 snum,xnum;
@@ -44,14 +40,14 @@ int SndWrite(int fid,struct RadarParm *prm,
 
   float *phi0=NULL;
   float *phi0_e=NULL;
-  float *elv=NULL;
-  float *elv_low=NULL;
-  float *elv_high=NULL;
 
   float sky_noise;
 
   int16 major_rev[1];
   int16 minor_rev[1];
+
+  ptr=DataMapMake();
+  if (ptr==NULL) return -1;
 
   major_rev[0] = SND_MAJOR_REVISION;
   minor_rev[0] = SND_MINOR_REVISION;
@@ -118,9 +114,6 @@ int SndWrite(int fid,struct RadarParm *prm,
 
     phi0=DataMapStoreArray(ptr,"phi0",DATAFLOAT,1,&xnum,NULL);
     phi0_e=DataMapStoreArray(ptr,"phi0_e",DATAFLOAT,1,&xnum,NULL);
-    elv=DataMapStoreArray(ptr,"elv",DATAFLOAT,1,&xnum,NULL);
-    elv_low=DataMapStoreArray(ptr,"elv_low",DATAFLOAT,1,&xnum,NULL);
-    elv_high=DataMapStoreArray(ptr,"elv_high",DATAFLOAT,1,&xnum,NULL);
   }
 
   x=0;
@@ -143,9 +136,6 @@ int SndWrite(int fid,struct RadarParm *prm,
 
         phi0[x]=fit->xrng[c].phi0;
         phi0_e[x]=fit->xrng[c].phi0_err;
-        elv[x]=fit->elv[c].normal;
-        elv_low[x]=fit->elv[c].low;
-        elv_high[x]=fit->elv[c].high;
       }
       x++;
     }
@@ -160,8 +150,7 @@ int SndWrite(int fid,struct RadarParm *prm,
 }
 
 
-int SndFwrite(FILE *fp,struct RadarParm *prm,
-              struct FitData *fit) {
+int SndFwrite(FILE *fp, struct RadarParm *prm, struct FitData *fit) {
   return SndWrite(fileno(fp),prm,fit);
 }
 
