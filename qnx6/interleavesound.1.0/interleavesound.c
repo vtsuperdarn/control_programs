@@ -523,6 +523,13 @@ int main(int argc,char *argv[]) {
         sprintf(logtxt, "SBC: %d  SFC: %d\n", snd_bm_cnt, snd_freq_cnt);
         ErrLog(errlog.sock, progname, logtxt);
 
+        /* set the scan variable for the sounding mode data file only */
+        if (bmnum == snd_bms[0]) {
+          prm->scan = 1;
+        } else {
+          prm->scan = 0;
+        }
+
         /* save the sounding mode data */
         write_snd_record(progname, prm, fit);
 

@@ -72,6 +72,7 @@ int SndWrite(int fid, struct RadarParm *prm, struct FitData *fit) {
   DataMapAddScalar(ptr,"bmnum",DATASHORT,&prm->bmnum);
   DataMapAddScalar(ptr,"bmazm",DATAFLOAT,&prm->bmazm);
 
+  DataMapAddScalar(ptr,"scan",DATASHORT,&prm->scan);
   DataMapAddScalar(ptr,"rxrise",DATASHORT,&prm->rxrise);
   DataMapAddScalar(ptr,"intt.sc",DATASHORT,&prm->intt.sc);
   DataMapAddScalar(ptr,"intt.us",DATAINT,&prm->intt.us);
