@@ -524,7 +524,7 @@ int main(int argc,char *argv[]) {
         ErrLog(errlog.sock, progname, logtxt);
 
         /* set the scan variable for the sounding mode data file only */
-        if (bmnum == snd_bms[0]) {
+        if ((bmnum == snd_bms[0]) && (snd_freq == snd_freqs[0])) {
           prm->scan = 1;
         } else {
           prm->scan = 0;
