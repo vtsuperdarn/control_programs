@@ -63,7 +63,7 @@ struct OptionData opt;
 int baseport=44100;
 struct TCPIPMsgHost errlog={"127.0.0.1",44100,-1};
 struct TCPIPMsgHost shell={"127.0.0.1",44101,-1};
-int tnum=4;      
+int tnum=4;
 struct TCPIPMsgHost task[4]={
     {"127.0.0.1",1,-1}, /* iqwrite */
     {"127.0.0.1",2,-1}, /* rawacfwrite */
@@ -162,7 +162,7 @@ int main(int argc,char *argv[]) {
   char *snd_dir;
   char data_path[100];
 
-  snd_intt = snd_intt_sc + snd_intt_us/1000000.0;
+  snd_intt = snd_intt_sc + snd_intt_us*1e-6;
 
   /* load the sounder frequencies from file if present */
   snd_dir = getenv("SD_SND_PATH");
@@ -212,8 +212,8 @@ int main(int argc,char *argv[]) {
   OptionAdd(&opt,"xcf",   'x',&xcnt);
   OptionAdd(&opt,"nrang", 'i',&nrang);
   OptionAdd(&opt,"ep",    'i',&errlog.port);
-  OptionAdd(&opt,"sp",    'i',&shell.port); 
-  OptionAdd(&opt,"bp",    'i',&baseport); 
+  OptionAdd(&opt,"sp",    'i',&shell.port);
+  OptionAdd(&opt,"bp",    'i',&baseport);
   OptionAdd(&opt,"stid",  't',&ststr);
   OptionAdd(&opt,"fixfrq",'i',&fixfrq);     /* fix the transmit frequency */
   OptionAdd(&opt,"frqrng",'i',&frqrng);     /* fix the FCLR window [kHz] */
@@ -348,7 +348,7 @@ int main(int argc,char *argv[]) {
 
     skip = OpsFindSkip(scnsc,scnus);
 
-    bmnum = bms[skip];		/* no longer need forward and backward arrays... */
+    bmnum = bms[skip];      /* no longer need forward and backward arrays... */
 
     do {
 
@@ -371,19 +371,19 @@ int main(int argc,char *argv[]) {
       ErrLog(errlog.sock,progname,"Starting Integration.");
       SiteStartIntt(intsc,intus);
 
-      ErrLog(errlog.sock,progname,"Doing clear frequency search."); 
+      ErrLog(errlog.sock,progname,"Doing clear frequency search.");
       sprintf(logtxt, "FRQ: %d %d", stfrq, frqrng);
       ErrLog(errlog.sock,progname, logtxt);
       tfreq=SiteFCLR(stfrq,stfrq+frqrng);
 
-      if ( (fixfrq > 8000) && (fixfrq < 25000) ) tfreq = fixfrq; 
+      if ( (fixfrq > 8000) && (fixfrq < 25000) ) tfreq = fixfrq;
 
       sprintf(logtxt,"Transmitting on: %d (Noise=%g)",tfreq,noise);
       ErrLog(errlog.sock,progname,logtxt);
       nave=SiteIntegrate(lags);
       if (nave<0) {
         sprintf(logtxt,"Integration error:%d",nave);
-        ErrLog(errlog.sock,progname,logtxt); 
+        ErrLog(errlog.sock,progname,logtxt);
         continue;
       }
       sprintf(logtxt,"Number of sequences: %d",nave);
@@ -443,7 +443,7 @@ int main(int argc,char *argv[]) {
     if (exitpoll==0) {
       /* In here comes the sounder code */
       /* set the "sounder mode" scan variable */
-      scan =- 2;
+      scan = -2;
 
       /* set the xcf variable to do cross-correlations (AOA) */
       xcf = 1;
@@ -451,14 +451,14 @@ int main(int argc,char *argv[]) {
       /* we have time until the end of the minute to do sounding */
       /* minus a safety factor given in time_needed */
       TimeReadClock(&yr,&mo,&dy,&hr,&mt,&sc,&us);
-      snd_time = 60.0 - (sc + us/ 1000000.0);
+      snd_time = 60.0 - (sc + us*1e-6);
 
       while (snd_time-snd_intt > time_needed) {
         intsc = snd_intt_sc;
         intus = snd_intt_us;
 
         /* set the beam */
-        bmnum = snd_bms[snd_bm_cnt]+odd_beams;
+        bmnum = snd_bms[snd_bm_cnt] + odd_beams;
 
         /* snd_freq will be an array of frequencies to step through */
         snd_freq = snd_freqs[snd_freq_cnt];
@@ -474,7 +474,7 @@ int main(int argc,char *argv[]) {
         tfreq = SiteFCLR(snd_freq, snd_freq + snd_frqrng);
 /*
  *           sprintf(logtxt,"Transmitting SND on: %d (Noise=%g)",tfreq,noise);
- *                     ErrLog( errlog.sock, progname, logtxt);
+ *                     ErrLog(errlog.sock, progname, logtxt);
  *                     */
         tsgid = SiteTimeSeq(ptab);
         nave = SiteIntegrate(lags);
@@ -492,8 +492,8 @@ int main(int argc,char *argv[]) {
         FitACF(prm,raw,fblk,fit);
 
         ErrLog(errlog.sock, progname, "Sending SND messages.");
-        msg.num= 0;
-        msg.tsize= 0;
+        msg.num = 0;
+        msg.tsize = 0;
 
         tmpbuf=RadarParmFlatten(prm,&tmpsze);
         RMsgSndAdd(&msg,tmpsze,tmpbuf,PRM_TYPE,0);
@@ -508,7 +508,7 @@ int main(int argc,char *argv[]) {
                (unsigned char *) sharedmemory,IQS_TYPE,0);
 
         tmpbuf=RawFlatten(raw,prm->nrang,prm->mplgs,&tmpsze);
-        RMsgSndAdd(&msg,tmpsze,tmpbuf,RAW_TYPE,0); 
+        RMsgSndAdd(&msg,tmpsze,tmpbuf,RAW_TYPE,0);
 
         tmpbuf=FitFlatten(fit,prm->nrang,&tmpsze);
         RMsgSndAdd(&msg,tmpsze,tmpbuf,FIT_TYPE,0);

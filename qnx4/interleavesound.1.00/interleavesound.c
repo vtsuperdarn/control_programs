@@ -179,7 +179,7 @@ int main(int argc,char *argv[]) {
   int snd_intt_us=0;
   float snd_time, snd_intt, time_needed=1.25;
 
-  snd_intt = snd_intt_sc + snd_intt_us/1000000.0;
+  snd_intt = snd_intt_sc + snd_intt_us*1e-6;
 
   /* load the sounder frequencies from file if present */
   sprintf(snd_filename, "%s/interleave_sounder.dat", getenv("SD_HDWPATH"));
@@ -205,7 +205,7 @@ int main(int argc,char *argv[]) {
     strcat(cmdlne,argv[n]);
   } 
 
-  strncpy(combf,progid,80);   
+  strncpy(combf,progid,80);
   OpsSetupCommand(argc,argv);
   OpsSetupRadar();
   OpsSetupShell();
@@ -269,7 +269,7 @@ int main(int argc,char *argv[]) {
   SiteSetupHardware();
 
   // set a negative CPID for discretionary time
-  if ( discretion) cp= -cp;
+  if (discretion) cp = -cp;
 
   // recalculate txpl
   txpl=(rsep*20)/3;
@@ -340,10 +340,10 @@ int main(int argc,char *argv[]) {
       SiteSetIntt(intsc,intus);
       SiteSetBeam(bmnum);
 
-      ErrLog(errlog,progname,"Doing clear frequency search."); 
+      ErrLog(errlog,progname,"Doing clear frequency search.");
 
       sprintf(logtxt, "FRQ: %d %d", stfrq, frqrng);
-      ErrLog( errlog, progname, logtxt);
+      ErrLog(errlog, progname, logtxt);
 
       if (SiteFCLR(stfrq,stfrq+frqrng)==FREQ_LOCAL)
         ErrLog(errlog,progname,"Frequency Synthesizer in local mode.");
@@ -359,7 +359,7 @@ int main(int argc,char *argv[]) {
       nave=SiteIntegrate(lags);
       if (nave<0) {
         sprintf(logtxt,"Integration error:%d",nave);
-        ErrLog(errlog,progname,logtxt); 
+        ErrLog(errlog,progname,logtxt);
         continue;
       }
       sprintf(logtxt,"Number of sequences: %d",nave);
@@ -422,14 +422,14 @@ int main(int argc,char *argv[]) {
       /* we have time until the end of the minute to do sounding */
       /* minus a safety factor given in time_needed */
       TimeReadClock(&yr,&mo,&dy,&hr,&mt,&sc,&us);
-      snd_time = 60.0 - ( sc + us/ 1000000.0);
+      snd_time = 60.0 - (sc + us*1e-6);
 
       while (snd_time-snd_intt > time_needed) {
         intsc = snd_intt_sc;
         intus = snd_intt_us;
 
         /* set the beam */
-        bmnum = snd_bms[snd_bm_cnt]+odd_beams;
+        bmnum = snd_bms[snd_bm_cnt] + odd_beams;
 
         /* snd_freq will be an array of frequencies to step through */
         snd_freq = snd_freqs[snd_freq_cnt];
@@ -440,19 +440,19 @@ int main(int argc,char *argv[]) {
         ErrLog(errlog,progname,"Setting SND beam.");
         SiteSetIntt(intsc,intus);
         SiteSetBeam(bmnum);
-        ErrLog(errlog, progname, "Doing SND clear frequency search."); 
-        if (SiteFCLR( snd_freq, snd_freq + snd_frqrng)==FREQ_LOCAL)
+        ErrLog(errlog, progname, "Doing SND clear frequency search.");
+        if (SiteFCLR(snd_freq, snd_freq + snd_frqrng)==FREQ_LOCAL)
           ErrLog(errlog,progname,"Frequency Synthesizer in local mode.");
         SiteSetFreq(tfreq);
 /*
         sprintf(logtxt,"Transmitting SND on: %d (Noise=%g)",tfreq,noise);
-        ErrLog( errlog, progname, logtxt);
+        ErrLog(errlog, progname, logtxt);
 */
         tsgid = SiteTimeSeq(ptab);
         nave = SiteIntegrate(lags);
         if (nave < 0) {
           sprintf(logtxt, "SND integration error: %d", nave);
-          ErrLog(errlog,progname, logtxt); 
+          ErrLog(errlog,progname, logtxt);
           continue;
         }
         sprintf(logtxt,"Number of SND sequences: %d",nave);
@@ -465,20 +465,20 @@ int main(int argc,char *argv[]) {
         FitACF(&prm,&raw,&fblk,&fit);
 
         ErrLog(errlog, progname, "Sending SND messages.");
-        msg.num= 0;
-        msg.tsize= 0;
-        RMsgSndAdd( &msg, sizeof(struct RadarParm), (unsigned char *) &prm, PRM_TYPE, 0); 
+        msg.num = 0;
+        msg.tsize = 0;
+        RMsgSndAdd(&msg, sizeof(struct RadarParm), (unsigned char *) &prm, PRM_TYPE, 0);
 
-        RMsgSndAdd( &msg,sizeof(struct IQData),(unsigned char *) &iq, IQ_TYPE,0);
+        RMsgSndAdd(&msg,sizeof(struct IQData),(unsigned char *) &iq, IQ_TYPE,0);
 
-        RMsgSndAdd( &msg,strlen(sharedmemory)+1,sharedmemory, IQS_TYPE,0);
+        RMsgSndAdd(&msg,strlen(sharedmemory)+1,sharedmemory, IQS_TYPE,0);
 
-        RMsgSndAdd( &msg, sizeof(struct RawData), (unsigned char *) &raw, RAW_TYPE, 0);
-        RMsgSndAdd( &msg, sizeof(struct FitData), (unsigned char *) &fit, FIT_TYPE, 0);
-        RMsgSndAdd( &msg, strlen(progname)+1, progname, NME_TYPE, 0);
+        RMsgSndAdd(&msg, sizeof(struct RawData), (unsigned char *) &raw, RAW_TYPE, 0);
+        RMsgSndAdd(&msg, sizeof(struct FitData), (unsigned char *) &fit, FIT_TYPE, 0);
+        RMsgSndAdd(&msg, strlen(progname)+1, progname, NME_TYPE, 0);
 
         /* Only send these to echo_data; otherwise they get written to the data files */
-        RMsgSndSend(tlist[ 0], &msg);
+        RMsgSndSend(tlist[0], &msg);
 
         sprintf(logtxt, "SBC: %d  SFC: %d\n", snd_bm_cnt, snd_freq_cnt);
         ErrLog(errlog, progname, logtxt);
