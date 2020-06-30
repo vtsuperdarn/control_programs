@@ -172,6 +172,7 @@ int main(int argc,char *argv[]) {
   int snd_freq_cnt=0, snd_bm_cnt=0;
   int snd_bms_tot=8, odd_beams=0;
   int snd_freq;
+  int snd_frqrng=100;
   int fast_intt_sc=3;
   int fast_intt_us=0;
   int snd_intt_sc=2;
@@ -253,6 +254,7 @@ int main(int argc,char *argv[]) {
   OptionAdd(&opt, "nf", 'i', &nfrq);
   OptionAdd(&opt, "xcf", 'i', &xcnt);
   OptionAdd(&opt, "frqrng", 'i', &frqrng);
+  OptionAdd(&opt, "sfrqrng", 'i',&snd_frqrng); /* sounding FCLR window [kHz] */
 
   arg=OptionProcess(1,argc,argv,&opt,NULL);
 
@@ -439,7 +441,7 @@ int main(int argc,char *argv[]) {
         SiteSetIntt(intsc,intus);
         SiteSetBeam(bmnum);
         ErrLog(errlog, progname, "Doing SND clear frequency search."); 
-        if (SiteFCLR( snd_freq, snd_freq + frqrng)==FREQ_LOCAL)
+        if (SiteFCLR( snd_freq, snd_freq + snd_frqrng)==FREQ_LOCAL)
           ErrLog(errlog,progname,"Frequency Synthesizer in local mode.");
         SiteSetFreq(tfreq);
 /*

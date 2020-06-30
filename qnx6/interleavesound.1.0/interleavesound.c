@@ -152,6 +152,7 @@ int main(int argc,char *argv[]) {
   int snd_freq_cnt=0, snd_bm_cnt=0;
   int snd_bms_tot=8, odd_beams=0;
   int snd_freq;
+  int snd_frqrng=100;
   int fast_intt_sc=2;
   int fast_intt_us=500000;
   int snd_intt_sc=1;
@@ -215,6 +216,8 @@ int main(int argc,char *argv[]) {
   OptionAdd(&opt,"bp",    'i',&baseport); 
   OptionAdd(&opt,"stid",  't',&ststr);
   OptionAdd(&opt,"fixfrq",'i',&fixfrq);     /* fix the transmit frequency */
+  OptionAdd(&opt,"frqrng",'i',&frqrng);     /* fix the FCLR window [kHz] */
+  OptionAdd(&opt,"sfrqrng",'i',&snd_frqrng); /* sounding FCLR window [kHz] */
   OptionAdd(&opt,"-help", 'x',&hlp);        /* just dump some parameters */
 
   /* Process all of the command line options
@@ -466,9 +469,9 @@ int main(int argc,char *argv[]) {
         ErrLog(errlog.sock,progname,"Setting SND beam.");
         SiteStartIntt(intsc,intus);
         ErrLog(errlog.sock, progname, "Doing SND clear frequency search.");
-        sprintf(logtxt, "FRQ: %d %d", snd_freq, frqrng);
+        sprintf(logtxt, "FRQ: %d %d", snd_freq, snd_frqrng);
         ErrLog(errlog.sock,progname, logtxt);
-        tfreq = SiteFCLR(snd_freq, snd_freq + frqrng);
+        tfreq = SiteFCLR(snd_freq, snd_freq + snd_frqrng);
 /*
  *           sprintf(logtxt,"Transmitting SND on: %d (Noise=%g)",tfreq,noise);
  *                     ErrLog( errlog.sock, progname, logtxt);
@@ -575,21 +578,23 @@ void usage(void)
 {
     printf("\ninterleavesound [command-line options]\n\n");
     printf("command-line options:\n");
-    printf("    -di     : indicates running during discretionary time\n");
-    printf(" -frang int : delay to first range (km) [180]\n");
-    printf("  -rsep int : range separation (km) [45]\n");
-    printf("    -dt int : hour when day freq. is used [site.c]\n");
-    printf("    -nt int : hour when night freq. is used [site.c]\n");
-    printf("    -df int : daytime frequency (kHz) [site.c]\n");
-    printf("    -nf int : nighttime frequency (kHz) [site.c]\n");
-    printf("   -xcf     : set for computing XCFs [global.c]\n");
-    printf(" -nrang int : number or range gates [limit.h]\n");
-    printf("    -ep int : error log port (must be set here for dual radars)\n");
-    printf("    -sp int : shell port (must be set here for dual radars)\n");
-    printf("    -bp int : base port (must be set here for dual radars)\n");
-    printf("  -stid char: radar string (must be set here for dual radars)\n");
-    printf("-fixfrq int : transmit on fixed frequency (kHz)\n");
-    printf(" --help     : print this message and quit.\n");
+    printf("     -di     : indicates running during discretionary time\n");
+    printf("  -frang int : delay to first range (km) [180]\n");
+    printf("   -rsep int : range separation (km) [45]\n");
+    printf("     -dt int : hour when day freq. is used [site.c]\n");
+    printf("     -nt int : hour when night freq. is used [site.c]\n");
+    printf("     -df int : daytime frequency (kHz) [site.c]\n");
+    printf("     -nf int : nighttime frequency (kHz) [site.c]\n");
+    printf("    -xcf     : set for computing XCFs [global.c]\n");
+    printf("  -nrang int : number or range gates [limit.h]\n");
+    printf("     -ep int : error log port (must be set here for dual radars)\n");
+    printf("     -sp int : shell port (must be set here for dual radars)\n");
+    printf("     -bp int : base port (must be set here for dual radars)\n");
+    printf("   -stid char: radar string (must be set here for dual radars)\n");
+    printf(" -fixfrq int : transmit on fixed frequency (kHz)\n");
+    printf(" -frqrng int : set the clear frequency search window (kHz)\n");
+    printf("-sfrqrng int : set the sounding FCLR search window (kHz)\n");
+    printf("  --help     : print this message and quit.\n");
     printf("\n");
 }
 
