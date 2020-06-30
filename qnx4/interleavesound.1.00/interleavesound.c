@@ -563,7 +563,7 @@ void write_snd_record(char *progname, struct RadarParm *prm, struct FitData *fit
   sprintf(filename, "%s%s.snd", data_path, data_filename);
 
   /* open the output file */
-  out=fopen(filename,"a");
+  out = fopen(filename,"a");
   if (out == NULL) {
     /* crap. might as well go home */
     sprintf(logtxt,"Unable to open sounding file:%s",filename);
@@ -571,7 +571,8 @@ void write_snd_record(char *progname, struct RadarParm *prm, struct FitData *fit
     return;
   }
 
-  status=SndFwrite(out,&prm,&fit);
+  /* write the sounding record */
+  status = SndFwrite(out, prm, fit);
   if (status == -1) {
     ErrLog(errlog,progname,"Error writing sounding record.");
   }
