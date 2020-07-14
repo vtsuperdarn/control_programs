@@ -54,6 +54,11 @@ int SndWrite(int fid, struct RadarParm *prm, struct FitData *fit) {
 
   DataMapAddScalar(ptr,"radar.revision.major",DATACHAR,&prm->revision.major);
   DataMapAddScalar(ptr,"radar.revision.minor",DATACHAR,&prm->revision.minor);
+
+  DataMapAddScalar(ptr,"origin.code",DATACHAR,&prm->origin.code);
+  DataMapAddScalar(ptr,"origin.time",DATASTRING,&prm->origin.time);
+  DataMapAddScalar(ptr,"origin.command",DATASTRING,&prm->origin.command);
+
   DataMapAddScalar(ptr,"cp",DATASHORT,&prm->cp);
   DataMapAddScalar(ptr,"stid",DATASHORT,&prm->stid);
   DataMapAddScalar(ptr,"time.yr",DATASHORT,&prm->time.yr);
@@ -88,6 +93,8 @@ int SndWrite(int fid, struct RadarParm *prm, struct FitData *fit) {
 
   DataMapAddScalar(ptr,"snd.revision.major",DATASHORT,major_rev);
   DataMapAddScalar(ptr,"snd.revision.minor",DATASHORT,minor_rev);
+
+  DataMapAddScalar(ptr,"combf",DATASTRING,&prm->combf);
 
   snum=0;
   for (c=0;c<prm->nrang;c++) {
