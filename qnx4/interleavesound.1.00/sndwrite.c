@@ -101,11 +101,11 @@ int SndWrite(int fid,struct RadarParm *prm,struct FitData *fit) {
   sky_noise=fit->noise.skynoise;
   DataMapAddScalar(data,"noise.sky",DATAFLOAT,&sky_noise);
 
-  DataMapAddScalar(data,"snd.revision.major",DATASHORT,major_rev);
-  DataMapAddScalar(data,"snd.revision.minor",DATASHORT,minor_rev);
-
   cmbptr=prm->combf;
   DataMapAddScalar(data,"combf",DATASTRING,&cmbptr);
+
+  DataMapAddScalar(data,"snd.revision.major",DATASHORT,major_rev);
+  DataMapAddScalar(data,"snd.revision.minor",DATASHORT,minor_rev);
 
   snum=0;
   for (c=0;c<prm->nrang;c++) {
