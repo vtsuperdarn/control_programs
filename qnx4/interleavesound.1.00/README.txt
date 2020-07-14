@@ -44,7 +44,7 @@ program will attempt to write the sounding data to the "/data/snd"
 directory. If this directory does not exist, no sounding data will
 be written. The 2-hr sounding files contain a reduced set of
 radar operating parameters and fitted values (e.g., velocity,
-power, spectral width, phi0, elevation) in dmap-format.
+power, spectral width, phi0) in dmap-format.
 
 Source:
 ======
