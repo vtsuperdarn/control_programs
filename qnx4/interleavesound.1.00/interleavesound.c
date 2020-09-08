@@ -164,7 +164,7 @@ int main(int argc,char *argv[]) {
   /* ---------------- Variables for sounding --------------- */
   char snd_filename[100];
   FILE *snd_dat;
-  /* If the file $SD_HDWPATH/interleave_sounder.dat exists, the next two parameters are read from it */
+  /* If the file $SD_HDWPATH/sounder_[rad].dat exists, the next two parameters are read from it */
   /* the file contains one integer value per line */
   int snd_freqs_tot=8;
   int snd_freqs[MAX_SND_FREQS] = {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0};
@@ -182,7 +182,7 @@ int main(int argc,char *argv[]) {
   snd_intt = snd_intt_sc + snd_intt_us*1e-6;
 
   /* load the sounder frequencies from file if present */
-  sprintf(snd_filename, "%s/interleave_sounder.dat", getenv("SD_HDWPATH"));
+  sprintf(snd_filename, "%s/sounder_%s.dat", getenv("SD_HDWPATH"), getenv("SD_RADARCODE"));
   fprintf(stderr, "Checking Sounder File: %s\n", snd_filename);
   snd_dat = fopen(snd_filename, "r");
   if (snd_dat != NULL) {

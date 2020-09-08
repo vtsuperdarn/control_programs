@@ -142,7 +142,7 @@ int main(int argc,char *argv[]) {
   /* ---------------- Variables for sounding --------------- */
   char snd_filename[100];
   FILE *snd_dat;
-  /* If the file $SD_SND_PATH/interleave_sounder.dat exists, the next two parameters are read from it */
+  /* If the file $SD_SND_PATH/sounder_[rad].dat exists, the next two parameters are read from it */
   /* the file contains one integer value per line */
   int snd_freqs_tot=8;
   int snd_freqs[MAX_SND_FREQS]= {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0 };
@@ -163,28 +163,6 @@ int main(int argc,char *argv[]) {
   char data_path[100];
 
   snd_intt = snd_intt_sc + snd_intt_us*1e-6;
-
-  /* load the sounder frequencies from file if present */
-  snd_dir = getenv("SD_SND_PATH");
-  if (snd_dir == NULL)
-    sprintf(data_path,"/data/ros/snd/");
-  else
-    memcpy(data_path,snd_dir,strlen(snd_dir));
-
-  sprintf(snd_filename,"%s/interleave_sounder.dat", data_path);
-  fprintf(stderr,"Checking Sounder File: %s\n",snd_filename);
-  snd_dat = fopen(snd_filename, "r");
-  if (snd_dat != NULL) {
-    fscanf(snd_dat, "%d", &snd_freqs_tot);
-    if (snd_freqs_tot > 12) snd_freqs_tot = 12;
-    for (snd_freq_cnt=0; snd_freq_cnt < snd_freqs_tot; snd_freq_cnt++)
-      fscanf(snd_dat, "%d", &snd_freqs[snd_freq_cnt]);
-    snd_freq_cnt = 0;
-    fclose(snd_dat);
-    fprintf(stderr,"Sounder File: %s read\n",snd_filename);
-  } else {
-    fprintf(stderr,"Sounder File: %s not found\n",snd_filename);
-  }
   /* ------------------------------------------------------- */
 
 
@@ -245,6 +223,28 @@ int main(int argc,char *argv[]) {
   } else {
     printf("Error: Not intended for station %s\n", ststr);
     return (-1);
+  }
+
+  /* load the sounder frequencies from file if present */
+  snd_dir = getenv("SD_SND_PATH");
+  if (snd_dir == NULL)
+    sprintf(data_path,"/data/ros/snd/");
+  else
+    memcpy(data_path,snd_dir,strlen(snd_dir));
+
+  sprintf(snd_filename,"%s/sounder_%s.dat", data_path, ststr);
+  fprintf(stderr,"Checking Sounder File: %s\n",snd_filename);
+  snd_dat = fopen(snd_filename, "r");
+  if (snd_dat != NULL) {
+    fscanf(snd_dat, "%d", &snd_freqs_tot);
+    if (snd_freqs_tot > 12) snd_freqs_tot = 12;
+    for (snd_freq_cnt=0; snd_freq_cnt < snd_freqs_tot; snd_freq_cnt++)
+      fscanf(snd_dat, "%d", &snd_freqs[snd_freq_cnt]);
+    snd_freq_cnt = 0;
+    fclose(snd_dat);
+    fprintf(stderr,"Sounder File: %s read\n",snd_filename);
+  } else {
+    fprintf(stderr,"Sounder File: %s not found\n",snd_filename);
   }
 
   /* end of main Dartmouth mods */
