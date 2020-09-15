@@ -207,7 +207,7 @@ void main(int argc,char *argv[]) {
   option_add(&cmdlne,"freq_range",'i',&freq_range);
   option_add(&cmdlne,"snd_frqrng",'i',&snd_frqrng);
 
- /* setup the remaining shell variables */
+  /* setup the remaining shell variables */
   radar_shell_parse(&rstable,                                      
                     "sbm l ebm l \                           
                      day_start_freq l night_start_freq l \               
@@ -246,9 +246,9 @@ void main(int argc,char *argv[]) {
   strncpy(combf,program_id,80);
 
   /* log startup */  
-   log_start(etsk,program_name,argc,argv);
+  log_start(etsk,program_name,argc,argv);
 
-   /* configure the hardware */
+  /* configure the hardware */
   ad_id=locate_task_id(a_d_name);
   dio_id=locate_task_id(dio_name);
 
@@ -492,7 +492,6 @@ void main(int argc,char *argv[]) {
         }
 
         /* save the sounding mode data */
-        recnum++;
         write_snd_record(raw);
 
         /* is the scheduler trying to shut us down */
@@ -549,7 +548,7 @@ void write_snd_record(struct rawdata raw) {
 
   char *text;
   int thresh=0;
-  
+
   /* get the snd data dir */
   snd_dir = getenv("SD_SND_PATH");
   if(snd_dir == NULL)
@@ -567,6 +566,28 @@ void write_snd_record(struct rawdata raw) {
   /* finally make the filename */
   sprintf(filename,"%s%s.dat.snd",data_path,data_filename);
 
+  /* check to see if output file exists */
+  out = fopen(filename,"r");
+
+  /* if file doesn't exist, create a new output file */
+  if (out==NULL) {
+    out = fopen(filename,"w");
+    if (out==NULL) {
+      fprintf(stderr, "Error creating sounding file: %s\n", filename);
+      return;
+    }
+
+    if (raw_header_fwrite("rawwrite",VSTRING,thresh,"interleavesound",out) !=0) {
+      fprintf(stderr,"Error writing sounding data header\n");
+      fclose(out);
+      return;
+    }
+
+    /* reset the record number to zero for new file */
+    recnum = 0;
+  }
+  fclose(out);
+
   /* open the output file */
   out = fopen(filename,"a");
   if (out==NULL) {
@@ -575,12 +596,8 @@ void write_snd_record(struct rawdata raw) {
     return;
   }
 
-  /* this doesn't work (not familiar with the old raw file formats) - EGT 20200909 */
-  status=raw_header_fwrite("rawwrite",VSTRING,thresh,text,out);
-
-  /* the recnum will just increase forever without smarter
-   * handling of output file - EGT 20200909 */
-  status=raw_fwrite(out,"rawwrite",raw,thresh,recnum);
+  recnum++;
+  raw_fwrite(out,"rawwrite",raw,thresh,recnum);
 
   fclose(out);
 }
