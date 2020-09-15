@@ -546,7 +546,6 @@ void write_snd_record(struct rawdata raw) {
   char *snd_dir;
   FILE *out;
 
-  char *text;
   int thresh=0;
 
   /* get the snd data dir */
