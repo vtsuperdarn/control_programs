@@ -130,10 +130,12 @@ int main(int argc,char *argv[]) {
   */
 
   /* For a 16-beam radar */
+  /*
   int num_scans = 16;
   int forward_beams[16] = { 0,4,8,12, 2,6,10,14, 1,5,9,13, 3,7,11,15 };
   int backward_beams[16]= { 15,11,7,3, 13,9,5,1, 14,10,6,2, 12,8,4,0 };
 
+  */
   /* For an eastward-looking radar with 20- or more beams (using only 20 beams to complete every 1 min) */ 
   /*
   int num_scans = 20;
@@ -144,11 +146,11 @@ int main(int argc,char *argv[]) {
   /* For an westward-looking radar with 20- or more beams (using only 20 beams to complete every 1 min) */ 
 
   /* max beam number: 23 (24-beam) */
-  /*
+  
   int num_scans = 20;
   int forward_beams[20] = { 4,8,12,16,20, 6,10,14,18,22, 5,9,13,17,21, 7,11,15,19,23 };
   int backward_beams[20]= { 23,19,15,11,7 ,21,17,13,9,5, 22,18,14,10,6, 20,16,12,8,4 };
-  */
+  
 
   /* max beam number: 21 (22-beam) */ 
   /*
