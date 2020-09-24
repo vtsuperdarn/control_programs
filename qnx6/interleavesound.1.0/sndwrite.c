@@ -94,6 +94,9 @@ int SndWrite(int fid, struct RadarParm *prm, struct FitData *fit) {
 
   DataMapAddScalar(ptr,"combf",DATASTRING,&prm->combf);
 
+  DataMapAddScalar(ptr,"fitacf.revision.major",DATAINT,&fit->revision.major);
+  DataMapAddScalar(ptr,"fitacf.revision.minor",DATAINT,&fit->revision.minor);
+
   DataMapAddScalar(ptr,"snd.revision.major",DATASHORT,major_rev);
   DataMapAddScalar(ptr,"snd.revision.minor",DATASHORT,minor_rev);
 
