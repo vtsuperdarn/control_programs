@@ -16,13 +16,17 @@
 
 /*
  $Log: sndwrite.c,v $
+ Revision 1.1  2020/09/24 egthomas
+ Updated SND_MINOR_REVISION number after several
+ revisions to the sounding file fields
+
  Revision 1.0  2020/06/25 egthomas
  Initial revision
 
 */
 
 #define SND_MAJOR_REVISION 1
-#define SND_MINOR_REVISION 0
+#define SND_MINOR_REVISION 1
 
 int SndWrite(int fid,struct RadarParm *prm,struct FitData *fit) {
 
@@ -84,6 +88,7 @@ int SndWrite(int fid,struct RadarParm *prm,struct FitData *fit) {
   DataMapAddScalar(data,"noise.search",DATAFLOAT,&prm->noise.search);
   DataMapAddScalar(data,"noise.mean",DATAFLOAT,&prm->noise.mean);
 
+  DataMapAddScalar(data,"channel",DATASHORT,&prm->channel);
   DataMapAddScalar(data,"bmnum",DATASHORT,&prm->bmnum);
   DataMapAddScalar(data,"bmazm",DATAFLOAT,&prm->bmazm);
 
