@@ -175,10 +175,10 @@ int main(int argc,char *argv[]) {
   int snd_bms_tot=8, odd_beams=0;
   int snd_freq;
   int snd_frqrng=100;
-  int fast_intt_sc=3;
-  int fast_intt_us=0;
-  int snd_intt_sc=2;
-  int snd_intt_us=0;
+  int fast_intt_sc=2;
+  int fast_intt_us=500000;
+  int snd_intt_sc=1;
+  int snd_intt_us=500000;
   float snd_time, snd_intt, time_needed=1.25;
 
   snd_intt = snd_intt_sc + snd_intt_us*1e-6;
