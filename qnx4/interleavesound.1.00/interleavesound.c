@@ -120,6 +120,8 @@ int main(int argc,char *argv[]) {
   int skip;
   int cnt=0;
 
+  int def_nrang=80;
+
   unsigned char discretion=0;
 
   /* ---------- Beam sequence for interleavedscan ---------- */
@@ -152,8 +154,8 @@ int main(int argc,char *argv[]) {
   int num_scans = 20;
   int forward_beams[20] = { 4,8,12,16,20, 6,10,14,18,22, 5,9,13,17,21, 7,11,15,19,23 };
   int backward_beams[20]= { 23,19,15,11,7 ,21,17,13,9,5, 22,18,14,10,6, 20,16,12,8,4 };
+  int snd_bms[10] = {22,20,18,16,14,12,10,8,6,4}; 
 
-  
   /* max beam number: 21 (22-beam) */ 
   /*
   int num_scans = 20;
@@ -174,30 +176,32 @@ int main(int argc,char *argv[]) {
   int snd_freqs_tot=8;
   int snd_freqs[MAX_SND_FREQS] = {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0};
   int snd_freq_cnt=0, snd_bm_cnt=0;
-  int odd_beams=0;
+  int snd_bms_tot=10, odd_beams=0;
   int snd_freq;
   int snd_frqrng=100;
-  /* TO DO: check/test the intt time set below to remove this */
+  int snd_nrang=75;
   int fast_intt_sc=2;
   int fast_intt_us=500000;
   int snd_intt_sc=1;
   int snd_intt_us=500000;
-  float snd_time, snd_intt, time_needed=1.25; 
+  float snd_time, snd_intt, time_needed=1.25;
   unsigned char limit_fswitch=0;
 
+/* Found this conditional setting of integration time breaks compilation 
   if (num_scans == 16) {
     int snd_bms_tot=8;
     int fast_intt_sc=3;
     int fast_intt_us=0;
     int snd_intt_sc=2;
     int snd_intt_us=0;
-  else if (num_scans == 20) {
+  } else if (num_scans == 20) {
     int snd_bms_tot=10;
     int fast_intt_sc=2;
-    int fast_intt_us=500000;
+    int fast_intt_us=400000;
     int snd_intt_sc=1;
     int snd_intt_us=500000;
   }
+*/
 
   snd_intt = snd_intt_sc + snd_intt_us*1e-6;
 
@@ -290,6 +294,9 @@ int main(int argc,char *argv[]) {
   OpsLogStart(errlog,progname,argc,argv);
 
   SiteSetupHardware();
+
+  /* Store scanning number of ranges to use for later */
+  def_nrang = nrang;
 
   // set a negative CPID for discretionary time
   if (discretion) cp = -cp;
@@ -432,7 +439,6 @@ int main(int argc,char *argv[]) {
       }
 
     } while (1);
-    ErrLog(errlog,progname,"Waiting for scan boundary.");
 
     if (exitpoll == 0) {
       /* In here comes the sounder code */
@@ -441,6 +447,8 @@ int main(int argc,char *argv[]) {
 
       /* set the xcf variable to do cross-correlations (AOA) */
       xcf = 1;
+
+      nrang = snd_nrang;
 
       /* we have time until the end of the minute to do sounding */
       /* minus a safety factor given in time_needed */
@@ -521,15 +529,15 @@ int main(int argc,char *argv[]) {
         if (exitpoll !=0) break;
 
         if (limit_fswitch) {
-          /* check for the end of a frequency loop */
-          snd_bm_cnt++;
-          if (snd_bm_cnt >= snd_bms_tot) {
-            /* reset the beam counter and increment the freq counter */
-            snd_bm_cnt = 0;
-            odd_beams = !odd_beams;
-            if (!odd_beams) snd_freq_cnt++;
-            if (snd_freq_cnt >= snd_freqs_tot) {
-              snd_freq_cnt = 0;
+          /* check for the end of a beam loop */
+          snd_freq_cnt++;
+          if (snd_freq_cnt >= snd_freqs_tot) {
+            /* reset the freq counter and increment the beam counter */
+            snd_freq_cnt = 0;
+            snd_bm_cnt++;
+            if (snd_bm_cnt >= snd_bms_tot) {
+              snd_bm_cnt = 0;
+              odd_beams = !odd_beams;
             }
           }
         } else {
@@ -551,9 +559,14 @@ int main(int argc,char *argv[]) {
         snd_time = 60.0 - (sc + us*1e-6);
       }
 
+      /* now wait for the next interleavescan  */
+      ErrLog(errlog,progname,"Waiting for scan boundary.");
+
       /* now wait for the next interleavescan */
       intsc = fast_intt_sc;
       intus = fast_intt_us;
+      nrang = def_nrang;
+
       OpsWaitBoundary(scnsc,scnus);
     }
 
