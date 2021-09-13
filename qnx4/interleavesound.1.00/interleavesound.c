@@ -120,6 +120,8 @@ int main(int argc,char *argv[]) {
   int skip;
   int cnt=0;
 
+  int def_nrang=0;
+
   unsigned char discretion=0;
 
   /* ---------- Beam sequence for interleavedscan ---------- */
@@ -168,7 +170,7 @@ int main(int argc,char *argv[]) {
   /* ---------------- Variables for sounding --------------- */
   char snd_filename[100];
   FILE *snd_dat;
-  /* If the file $SD_HDWPATH/sounder_[rad].dat exists, the next two parameters are read from it */
+  /* If the file $SD_HDWPATH/interleave_sounder.dat exists, the next two parameters are read from it */
   /* the file contains one integer value per line */
   int snd_freqs_tot=8;
   int snd_freqs[MAX_SND_FREQS] = {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0};
@@ -176,7 +178,10 @@ int main(int argc,char *argv[]) {
   int odd_beams=0;
   int snd_freq;
   int snd_frqrng=100;
+  int snd_nrang=75;
   float snd_time, snd_intt, time_needed=1.25;
+  int snd_bms_tot, snd_intt_sc, snd_intt_us;
+  int fast_intt_sc, fast_intt_us;
   unsigned char limit_fswitch=0;
 
   if (num_scans == 16) {
@@ -196,7 +201,7 @@ int main(int argc,char *argv[]) {
   snd_intt = snd_intt_sc + snd_intt_us*1e-6;
 
   /* load the sounder frequencies from file if present */
-  sprintf(snd_filename, "%s/sounder_%s.dat", getenv("SD_HDWPATH"), getenv("SD_RADARCODE"));
+  sprintf(snd_filename, "%s/interleave_sounder.dat", getenv("SD_HDWPATH"));
   fprintf(stderr, "Checking Sounder File: %s\n", snd_filename);
   snd_dat = fopen(snd_filename, "r");
   if (snd_dat != NULL) {
@@ -284,6 +289,8 @@ int main(int argc,char *argv[]) {
   OpsLogStart(errlog,progname,argc,argv);
 
   SiteSetupHardware();
+
+  def_nrang = nrang;
 
   // set a negative CPID for discretionary time
   if (discretion) cp = -cp;
@@ -426,7 +433,6 @@ int main(int argc,char *argv[]) {
       }
 
     } while (1);
-    ErrLog(errlog,progname,"Waiting for scan boundary.");
 
     if (exitpoll == 0) {
       /* In here comes the sounder code */
@@ -435,6 +441,9 @@ int main(int argc,char *argv[]) {
 
       /* set the xcf variable to do cross-correlations (AOA) */
       xcf = 1;
+
+      /* set the sounding mode number of range gates */
+      nrang = snd_nrang;
 
       /* we have time until the end of the minute to do sounding */
       /* minus a safety factor given in time_needed */
@@ -545,9 +554,13 @@ int main(int argc,char *argv[]) {
         snd_time = 60.0 - (sc + us*1e-6);
       }
 
+      ErrLog(errlog,progname,"Waiting for scan boundary.");
+
       /* now wait for the next interleavescan */
       intsc = fast_intt_sc;
       intus = fast_intt_us;
+      nrang = def_nrang;
+
       OpsWaitBoundary(scnsc,scnus);
     }
 
