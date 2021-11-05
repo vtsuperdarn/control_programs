@@ -211,7 +211,7 @@ int main(int argc,char *argv[]) {
     normal_intt_sc=5;
     normal_intt_us=0;
     fast_intt_sc=2;
-    fast_intt_us=400000;
+    fast_intt_us=100000;
     snd_intt_sc=1;
     snd_intt_us=500000;
   }
