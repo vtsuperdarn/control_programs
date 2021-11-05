@@ -73,7 +73,7 @@
 
  Revision 2.0  2004/03/23 andre
  Initial revision from John Hughes program
- 
+
 */
 
 #define SCHEDULER "schedule"
@@ -98,7 +98,7 @@ struct OptionData opt;
 
 int main(int argc,char *argv[]) {
 
-  /* The pulse sequence table and lags for katscan */ 
+  /* The pulse sequence table and lags for katscan */
   int ptab[8] = {0,14,22,24,27,31,42,43};
 
   int lags[LAG_SIZE][2] = {
@@ -159,8 +159,8 @@ int main(int argc,char *argv[]) {
   */
 
   /* For a 16-beam radar */
-  int snd_bms[8] = {0,2,4,6,8,10,12,14};
-  int snd_bms_tot = 8;
+/*  int snd_bms[8] = {0,2,4,6,8,10,12,14};
+  int snd_bms_tot = 8; */
 
   /* For an eastward-looking radar with 20- or more beams (using only 20 beams to complete every 1 min) */
   /*
@@ -171,10 +171,10 @@ int main(int argc,char *argv[]) {
   /* For an westward-looking radar with 20- or more beams (using only 20 beams to complete every 1 min) */
 
   /* max beam number: 23 (24-beam) */
-  /*
+
   int snd_bms[10] = {22,20,18,16,14,12,10,8,6,4};
   int snd_bms_tot = 10;
-  */
+
 
   /* max beam number: 21 (22-beam) */
   /*
@@ -240,13 +240,13 @@ int main(int argc,char *argv[]) {
   for (n=1;n<argc;n++) {
     strcat(cmdlne," ");
     strcat(cmdlne,argv[n]);
-  } 
+  }
 
   strncpy(combf,progid,80);
   OpsSetupCommand(argc,argv);
   OpsSetupRadar();
   OpsSetupShell();
- 
+
   RadarShellParse(&rstable,"sbm l ebm l dfrq l nfrq l dfrang l nfrang l dmpinc l nmpinc l frqrng l xcnt l",
                   &sbm,&ebm,
                   &dfrq,&nfrq,
@@ -595,7 +595,7 @@ int main(int argc,char *argv[]) {
   ErrLog(errlog,progname,"Ending program.");
   RShellTerminate(sid);
   return 0;
-} 
+}
 
 
 /********************** function write_snd_record() ************************/
