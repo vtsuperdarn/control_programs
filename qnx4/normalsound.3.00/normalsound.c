@@ -457,7 +457,7 @@ int main(int argc,char *argv[]) {
       scan = -2;
 
       /* set the xcf variable to do cross-correlations (AOA) */
-      xcf = 1;
+      /* xcf = 1;  GBR does not currently do xcf data collection.  -KTS 20211108 */
 
       /* set the sounding mode integration time and number of ranges */
       intsc = snd_intt_sc;
