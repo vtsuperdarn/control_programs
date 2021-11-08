@@ -1,0 +1,52 @@
+# $Log: version.info,v $
+# Revision 1.09 2012/12/12 20:09:00  kts
+# Added triggered cpid change based on schedule line having -trig
+#
+# Revision 1.08 2012/10/31 18:15:46  kts
+# Changes to beam array setting, placing a cap on 16 beam radars to only
+# do at most 28 soundings, as well as cleaning up unnecssary code.
+#
+# Revision 1.07 2012/10/19 18:24:37  kts
+# Minor change to nintgs calculation to deal with different results from
+# different number of beams for the radar.
+#
+# Revision 1.06 2012/10/18 20:16:00  kts
+# Minor revision to nintgs calculation
+#
+# Revision 1.05 2012/10/12 20:38:35  kts                                         
+# Modified the skip calculation to use intsc and intus instead of skipsc and     
+# skipus.  Also buffered the calculation by having it skip ahead by 2 beams.     
+#
+# Revision 1.04 2012/10/11 18:38:54  kts                                                                                
+# Did away with static beam arrays.  Pulled code developed by Simon Shepherd                                            
+# and myself on dynamic beam creation.  Also had beam progression done like                                             
+# 'Option 2' in which the mini-scan beams do not appear in the field of view                                            
+# beams.
+#   
+# Revision 1.03 2012/09/28 10:38:00  kts                                                                
+# Corrected the order of the mini-scan beams as well as changed                                         
+# how the tracbm variable is set. 
+#
+# Revision 1.02 2012/09/25 21:06:00  kts
+# Decreased number of beams, removed themisscan's synchronizing
+# functionality after comments from Dieter.
+#
+# Revision 1.01 2012/09/25 12:47:12  kts
+# Increased number of beams in scanning scheme to 38.
+#
+# Revision 1.0  2012/09/21 19:48:58  kts
+# Initial version
+#
+#
+# Below are the themisscan.c revisions which this code was based off of
+#
+# Revision 1.3  2008/03/15 11:22:28  code
+# Added I&Q sample capture with iqwrite.
+#
+# Revision 1.2  2008/03/14 17:51:48  code
+# Added support for I&Q sample capture.
+#
+# Revision 1.1  2008/03/12 16:48:35  code
+# Initial revision
+
+rbspscan4.c 1.09
