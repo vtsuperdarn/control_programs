@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 This repo is forked from the SuperDARN/control_programs repo. Here this repo will
 contain radar specific changes in order to easily deploy control program changes
 to the radars.  Radar specific code will be stored on *radar*-operations branches.
