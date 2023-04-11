@@ -1,9 +1,17 @@
 # $Log: version.info,v $
 #
+# Revision 1.2  2021/11/15 egthomas
+# Modification to set default nrang before SiteStart to
+# allow site-specific number of ranges for interleaved scan
+#
+# Revision 1.1  2021/09/15 egthomas
+# Modification to set number of ranges used for frequency
+# sounding independently of nrang for the interleaved scan
+#
 # Revision 1.0  2019/06/14 egthomas
 # Initial revision from interleavedscan and normalsound
 #
 #
-interleavesound.c 1.00
+interleavesound.c 1.02
 sndwrite.c 1.01
 sndwrite.h 1.00
