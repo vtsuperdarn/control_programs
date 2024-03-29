@@ -118,7 +118,7 @@ int main(int argc,char *argv[]) {
   pid_t sid;
   int exitpoll=0;
 
-  int scnsc=30;
+  int scnsc=60;
   int scnus=0;
   int skip;
   int cnt=0;
@@ -133,9 +133,9 @@ int main(int argc,char *argv[]) {
   */
 
   /* For a 16-beam radar */
-  int num_scans = 8;
-  int forward_beams[8] = { 1, 3, 5, 7, 9,11,13,15 };
-  int backward_beams[8]= { 14,12,10, 8, 6, 4, 2, 0 };
+  int num_scans = 9;
+  int forward_beams[9] = { 0,7,4,7,8,7,12,7,15 };
+  int backward_beams[9]= { 15,7,12,7, 8, 7, 4, 7, 0 };
 
   /* For an eastward-looking radar with 20- or more beams (using only 20 beams to complete every 1 min) */ 
   /*
@@ -179,7 +179,7 @@ int main(int argc,char *argv[]) {
   int fast_intt_sc=2;
   int fast_intt_us=700000;
   int snd_intt_sc=1;
-  int snd_intt_us=250000;
+  int snd_intt_us=500000;
   float snd_time, snd_intt, time_needed=1.25;
 
   snd_intt = snd_intt_sc + snd_intt_us*1e-6;
@@ -425,11 +425,8 @@ int main(int argc,char *argv[]) {
       /* we have time until the end of the minute to do sounding */
       /* minus a safety factor given in time_needed */
       TimeReadClock(&yr,&mo,&dy,&hr,&mt,&sc,&us);
-      if (sc>31) {
-        snd_time = 60.0 - (sc + us*1e-6);
-      } else {
-        snd_time = 30.0 - (sc + us*1e-6);
-      }	
+      snd_time = 60.0 - (sc + us*1e-6);
+
       while (snd_time-snd_intt > time_needed) {
         intsc = snd_intt_sc;
         intus = snd_intt_us;
@@ -517,11 +514,7 @@ int main(int argc,char *argv[]) {
 
         /* see if we have enough time for another go round */
         TimeReadClock(&yr, &mo, &dy, &hr, &mt, &sc, &us);
-        if (sc>31) { 
-          snd_time = 60.0 - (sc + us*1e-6);
-        } else {
-          snd_time = 30.0 - (sc + us*1e-6);
-        }
+        snd_time = 60.0 - (sc + us*1e-6);
       }
 
       /* now wait for the next interleavescan */
