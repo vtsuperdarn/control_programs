@@ -158,7 +158,7 @@ int main(int argc,char *argv[]) {
   int snd_bmse[]={21,3,15};   /* beam sequences for 22-beam MSI radars using only */
   int snd_bmsw[]={12,3,18};  /*  the 20 most meridional beams */
   int snd_freq_cnt=0, snd_bm_cnt=0;
-  int snd_bms_tot=3, odd_beams=0;
+  int snd_bms_tot=3;
   int snd_freq;
   int snd_frqrng=100;
   int fast_intt_sc=2;
@@ -477,7 +477,7 @@ int main(int argc,char *argv[]) {
         intus = snd_intt_us;
 
         /* set the beam */
-        bmnum = snd_bms[snd_bm_cnt] + odd_beams;
+        bmnum = snd_bms[snd_bm_cnt];
 
         /* snd_freq will be an array of frequencies to step through */
         snd_freq = snd_freqs[snd_freq_cnt];
@@ -566,7 +566,6 @@ int main(int argc,char *argv[]) {
           snd_bm_cnt++;
           if (snd_bm_cnt >= snd_bms_tot) {
             snd_bm_cnt = 0;
-            odd_beams = !odd_beams;
           }
         }
 
