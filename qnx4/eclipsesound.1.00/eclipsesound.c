@@ -173,7 +173,7 @@ int main(int argc,char *argv[]) {
   int snd_freqs[MAX_SND_FREQS] = {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0};
   int snd_bms[] = {3,6,9};
   int snd_freq_cnt=0, snd_bm_cnt=0;
-  int snd_bms_tot=3, odd_beams=0;
+  int snd_bms_tot=3;
   int snd_freq;
   int snd_frqrng=100;
   int fast_intt_sc=2;
@@ -432,7 +432,7 @@ int main(int argc,char *argv[]) {
         intus = snd_intt_us;
 
         /* set the beam */
-        bmnum = snd_bms[snd_bm_cnt] + odd_beams;
+        bmnum = snd_bms[snd_bm_cnt];
 
         /* snd_freq will be an array of frequencies to step through */
         snd_freq = snd_freqs[snd_freq_cnt];
@@ -508,7 +508,6 @@ int main(int argc,char *argv[]) {
           snd_bm_cnt++;
           if (snd_bm_cnt >= snd_bms_tot) {
             snd_bm_cnt = 0;
-            odd_beams = !odd_beams;
           }
         }
 
