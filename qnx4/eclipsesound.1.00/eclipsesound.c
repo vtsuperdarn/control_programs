@@ -179,7 +179,7 @@ int main(int argc,char *argv[]) {
   int fast_intt_sc=2;
   int fast_intt_us=900000;
   int snd_intt_sc=1;
-  int snd_intt_us=500000;
+  int snd_intt_us=600000;
   float snd_time, snd_intt, time_needed=1.25;
 
   snd_intt = snd_intt_sc + snd_intt_us*1e-6;
@@ -508,6 +508,7 @@ int main(int argc,char *argv[]) {
           snd_bm_cnt++;
           if (snd_bm_cnt >= snd_bms_tot) {
             snd_bm_cnt = 0;
+            break;
           }
         }
 
