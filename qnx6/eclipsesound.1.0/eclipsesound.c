@@ -141,10 +141,10 @@ int main(int argc,char *argv[]) {
    */
   /* count     1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 */
   /*          21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 */
-  int bmse[10] =
-             { 1, 19, 5, 19, 9, 19,13,19,17,19};
-  int bmsw[10] =
-             {17,11,13,11, 9, 11, 5, 11, 1,11};
+  int bmse[11] =
+             { 1, 3, 5, 7, 9,11,13,15,17,19,21};
+  int bmsw[11] =
+             {21,19,17,15,13,11, 9, 7, 5, 3, 1};
 
 
   /* ---------------- Variables for sounding --------------- */
@@ -162,7 +162,7 @@ int main(int argc,char *argv[]) {
   int snd_freq;
   int snd_frqrng=100;
   int fast_intt_sc=2;
-  int fast_intt_us=900000;
+  int fast_intt_us=700000;
   int snd_intt_sc=1;
   int snd_intt_us=600000;
   float snd_time, snd_intt, time_needed=0.5;
