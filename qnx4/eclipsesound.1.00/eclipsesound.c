@@ -133,9 +133,9 @@ int main(int argc,char *argv[]) {
   */
 
   /* For a 16-beam radar */
-  int num_scans = 10;
-  int forward_beams[10] = { 0,7,4,7,8,7,12,7,15,10 };
-  int backward_beams[10]= { 15,8,11,8,7,8,4,8,1,8 };
+  int num_scans = 9;
+  int forward_beams[9] = { 1, 3, 5, 7, 9, 11,13,14,15 };
+  int backward_beams[9]= { 15,13,11,9, 7, 5, 3, 1, 0 };
 
   /* For an eastward-looking radar with 20- or more beams (using only 20 beams to complete every 1 min) */ 
   /*
@@ -176,8 +176,8 @@ int main(int argc,char *argv[]) {
   int snd_bms_tot=3;
   int snd_freq;
   int snd_frqrng=100;
-  int fast_intt_sc=2;
-  int fast_intt_us=900000;
+  int fast_intt_sc=3;
+  int fast_intt_us=0;
   int snd_intt_sc=1;
   int snd_intt_us=600000;
   float snd_time, snd_intt, time_needed=1.25;
