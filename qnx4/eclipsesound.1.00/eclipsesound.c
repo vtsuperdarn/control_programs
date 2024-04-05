@@ -420,7 +420,7 @@ int main(int argc,char *argv[]) {
       scan = -2;
 
       /* set the xcf variable to do cross-correlations (AOA) */
-      xcf = 0;
+      xcf = 1;
 
       /* we have time until the end of the minute to do sounding */
       /* minus a safety factor given in time_needed */
