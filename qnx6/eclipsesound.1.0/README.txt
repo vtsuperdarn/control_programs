@@ -1,10 +1,10 @@
 Radar Control Program Name:
 ==========================
-interleavesound
+eclipsesound
 
 Control Program ID (CPID):
 =========================
-197
+1103
 
 Parameters:
 ==========
@@ -17,10 +17,10 @@ rsep: 45 km
 
 Description:
 ===========
-interleavesound is a variant on the interleaved_normalscan and
-normalsound radar control programs. interleavesound performs
-a scan in a nonsequential manner by "interleaving" the beam
-number, e.g. (0-4-8-12)-(2-6-10-14)-(1-5-9-13)-(3-7-11-15).
+eclipsesound is a variant on the interleavesound and
+normalsound radar control programs. eclipsesound performs
+a scan in a nonsequential manner by only certain beam
+numbers, e.g. (15-13-11-9-7 etc.).
 In the remaining time until the end of the minute it performs
 scans through a set of up to 12 frequencies and through all
 beams [even/odd]. Note that unlike normalsound, this information
