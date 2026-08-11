@@ -155,8 +155,8 @@ int main(int argc,char *argv[]) {
   int snd_freqs_tot=8;
   int snd_freqs[MAX_SND_FREQS]= {11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 0, 0, 0, 0 };
   int *snd_bms;
-  int snd_bmse[]={21,3,15};   /* beam sequences for 22-beam MSI radars using only */
-  int snd_bmsw[]={12,3,18};  /*  the 20 most meridional beams */
+  int snd_bmse[]={6,10,16};   /* beam sequences for 22-beam MSI radars using only */
+  int snd_bmsw[]={20,16,8};  /*  the 20 most meridional beams */
   int snd_freq_cnt=0, snd_bm_cnt=0;
   int snd_bms_tot=3;
   int snd_freq;
